@@ -16,11 +16,11 @@
    - type: "host"   = 내가 연 공구      (마지막 열 = 선점자)
      type: "joined" = 내가 참여한 공구  (마지막 열 = 공구주)
    - 총계는 갯수 × 단가로 자동 계산되니 따로 적지 않습니다.
-   - 선점자가 여러 명이면 ["투스", "공구주"] 처럼 나열하면 됩니다.
+   - 선점자가 여러 명이면 ["윤서연", "공구주"] 처럼 나열하면 됩니다.
    ============================================================ */
 
 window.GONGGU_DATA = {
-  version: 1,
+  version: 2,
 
   groups: [
     {
@@ -29,9 +29,9 @@ window.GONGGU_DATA = {
       date: "2025-10-02",
       type: "host",
       items: [
-        { id: "i-1002-1", name: "유령 치이카와", qty: 1, price: 21000, holders: ["먀우"] },
+        { id: "i-1002-1", name: "유령 치이카와", qty: 1, price: 21000, holders: ["홍길동"] },
         { id: "i-1002-2", name: "유령 하치와레", qty: 1, price: 21000, holders: ["공구주"] },
-        { id: "i-1002-3", name: "유령 우사기",   qty: 2, price: 21000, holders: ["긴9", "우햄"] }
+        { id: "i-1002-3", name: "유령 우사기",   qty: 2, price: 21000, holders: ["최지우", "김철수"] }
       ]
     },
 
@@ -41,10 +41,10 @@ window.GONGGU_DATA = {
       date: "2025-09-25",
       type: "host",
       items: [
-        { id: "i-0925-1", name: "딸기 랏코",        qty: 1, price: 19800, holders: ["먀우"] },
-        { id: "i-0925-2", name: "간호사 하치와레",  qty: 1, price: 19800, holders: ["우햄"] },
-        { id: "i-0925-3", name: "완두콩 쿠리만쥬",  qty: 1, price: 19800, holders: ["고굼마이"] },
-        { id: "i-0925-4", name: "간호사 치이카와",  qty: 1, price: 19800, holders: ["먼작귀귀"] },
+        { id: "i-0925-1", name: "딸기 랏코",        qty: 1, price: 19800, holders: ["홍길동"] },
+        { id: "i-0925-2", name: "간호사 하치와레",  qty: 1, price: 19800, holders: ["김철수"] },
+        { id: "i-0925-3", name: "완두콩 쿠리만쥬",  qty: 1, price: 19800, holders: ["이영희"] },
+        { id: "i-0925-4", name: "간호사 치이카와",  qty: 1, price: 19800, holders: ["박민수"] },
         { id: "i-0925-5", name: "의사 우사기",      qty: 1, price: 19800, holders: ["공구주"] }
       ]
     },
@@ -55,8 +55,8 @@ window.GONGGU_DATA = {
       date: "2025-09-16",
       type: "host",
       items: [
-        { id: "i-0916-1", name: "사줘 치이카와",   qty: 1, price: 17500, holders: ["투스", "공구주"] },
-        { id: "i-0916-2", name: "사줘 하치와레",   qty: 1, price: 17500, holders: ["쮜익까와"] }
+        { id: "i-0916-1", name: "사줘 치이카와",   qty: 1, price: 17500, holders: ["윤서연", "공구주"] },
+        { id: "i-0916-2", name: "사줘 하치와레",   qty: 1, price: 17500, holders: ["정수빈"] }
       ]
     },
 
@@ -66,9 +66,9 @@ window.GONGGU_DATA = {
       date: "2025-08-21",
       type: "host",
       items: [
-        { id: "i-0821-1", name: "초코치이",      qty: 1, price: 12000, holders: ["쮜익까와"] },
-        { id: "i-0821-2", name: "초코 하치",     qty: 1, price: 12000, holders: ["먀우"] },
-        { id: "i-0821-3", name: "생크림 치이",   qty: 1, price: 12000, holders: ["고굼마이"] }
+        { id: "i-0821-1", name: "초코치이",      qty: 1, price: 12000, holders: ["정수빈"] },
+        { id: "i-0821-2", name: "초코 하치",     qty: 1, price: 12000, holders: ["홍길동"] },
+        { id: "i-0821-3", name: "생크림 치이",   qty: 1, price: 12000, holders: ["이영희"] }
       ]
     },
 
@@ -78,7 +78,7 @@ window.GONGGU_DATA = {
       date: "2025-07-01",
       type: "host",
       items: [
-        { id: "i-etc-1", name: "엔젤 치이카와",  qty: 1, price: 23000, holders: ["긴9"] },
+        { id: "i-etc-1", name: "엔젤 치이카와",  qty: 1, price: 23000, holders: ["최지우"] },
         { id: "i-etc-2", name: "엔젤 우사기",    qty: 1, price: 23000, holders: ["공구주"] }
       ]
     },
@@ -89,8 +89,8 @@ window.GONGGU_DATA = {
       date: "2025-09-10",
       type: "joined",
       items: [
-        { id: "i-joined-1", name: "모찌모찌 치이카와", qty: 1, price: 28000, holders: ["먀우님"] },
-        { id: "i-joined-2", name: "파자마 하치와레",   qty: 1, price: 26500, holders: ["우햄님"] }
+        { id: "i-joined-1", name: "모찌모찌 치이카와", qty: 1, price: 28000, holders: ["홍길동님"] },
+        { id: "i-joined-2", name: "파자마 하치와레",   qty: 1, price: 26500, holders: ["김철수님"] }
       ]
     }
   ]

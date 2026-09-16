@@ -565,7 +565,7 @@ function itemForm(g, it) {
     </div>
     <div class="calc" id="calc">총계 0원</div>
     <label>${holderLabel(g)}</label>
-    <input type="text" name="holders" value="${esc(it ? (it.holders || []).join(", ") : "")}" placeholder="여러 명이면 쉼표로 (예: 투스, 공구주)">
+    <input type="text" name="holders" value="${esc(it ? (it.holders || []).join(", ") : "")}" placeholder="여러 명이면 쉼표로 (예: 윤서연, 공구주)">
     <div class="hint">쉼표( , ) 또는 슬래시( / )로 구분하면 여러 명으로 저장돼요.</div>
     ${isNew ? "" : `<button type="button" class="btn danger" data-delitem="1">이 품목 삭제</button>`}
   `, d => {
