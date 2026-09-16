@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf7f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1618" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="공구리스트">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>공구 리스트</title>
+<style>
+/* ─────────────────────────────────────────────
+   색 테마 — 아래 --accent 계열 3줄만 바꾸면 분위기가 전부 바뀝니다.
+
+   다른 팔레트로 갈아타려면 라이트/다크 두 곳을 같이 바꿔 주세요.
+
+   · 라벤더  라이트 #8c72b5 / #f2ecfa   다크 #b9a1e0 / #2e2640
+   · 세이지  라이트 #5f8a6a / #e8f2ea   다크 #8fc0a0 / #223027
+   · 청보라  라이트 #5d7bb5 / #e9eefa   다크 #9db4e4 / #232b3d
+   ───────────────────────────────────────────── */
+:root{
+  --bg:#faf7f6; --card:#fff; --line:#efe6e6; --text:#3a3033; --muted:#9c8d90;
+  --accent:#b8697f;          /* 포인트색 — 버튼, 활성 탭, 링크 */
+  --accent-soft:#fceef1;     /* 연한 배경 — 선점자 칩, 합계 행 */
+  --on-accent:#fff;          /* 포인트색 위에 올라가는 글자색 */
+  --accent-btn:rgba(255,255,255,.22);
+  --mark:#ffe6a8;
+  --shadow:0 1px 2px rgba(0,0,0,.04), 0 6px 18px rgba(90,60,70,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1a1618; --card:#241f21; --line:#38302f; --text:#f0e9ea; --muted:#a89a9d;
+    --accent:#e9a3b4;
+    --accent-soft:#39272c;
+    --on-accent:#2a1b20;
+    --accent-btn:rgba(0,0,0,.14);
+    --mark:#6f5a2a;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",sans-serif;
+  font-size:15px; line-height:1.5;
+  padding-bottom:calc(72px + env(safe-area-inset-bottom));
+}
+#app{max-width:720px;margin:0 auto;padding:0 14px}
+
+header{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  padding:calc(12px + env(safe-area-inset-top)) 0 10px;
+}
+h1{font-size:22px;margin:0;letter-spacing:-.4px}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.backbtn{
+  background:none;border:none;color:var(--accent);font-size:15px;
+  padding:4px 0;margin-bottom:6px;cursor:pointer;font-weight:600
+}
+
+.tabs{display:flex;gap:6px;margin:12px 0 4px}
+.tabs button{
+  flex:1;padding:8px 6px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);font-size:13.5px;font-weight:600;cursor:pointer
+}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:14px;margin:10px 0;box-shadow:var(--shadow);cursor:pointer;
+  display:flex;align-items:center;gap:12px
+}
+.card:active{transform:scale(.99)}
+.card .body{flex:1;min-width:0}
+.card .t{font-weight:700;font-size:16px;letter-spacing:-.3px}
+.card .m{color:var(--muted);font-size:12.5px;margin-top:3px}
+.card .amt{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;white-space:nowrap}
+.chev{color:var(--muted);font-size:18px}
+
+.tablewrap{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow-x:auto;box-shadow:var(--shadow);margin:12px 0
+}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600;background:transparent}
+td.name{white-space:normal;min-width:110px;font-weight:500}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.sum td{border-bottom:none;font-weight:800;background:var(--accent-soft)}
+tr:last-child td{border-bottom:none}
+.who{display:inline-block;background:var(--accent-soft);color:var(--accent);
+  border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;margin:1px 3px 1px 0}
+.rowact{color:var(--muted);cursor:pointer;padding:0 4px;background:none;border:none;font-size:14px}
+
+.empty{text-align:center;color:var(--muted);padding:48px 16px;font-size:14px}
+.search{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--text);font-size:16px;outline:none
+}
+.search:focus{border-color:var(--accent)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.btn{
+  display:block;width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--text);font-size:14.5px;font-weight:600;cursor:pointer;margin:8px 0
+}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{color:#c2483f;border-color:var(--line)}
+.stat{display:flex;gap:10px;margin:12px 0}
+.stat>div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:14px;text-align:center;box-shadow:var(--shadow)}
+.stat .k{color:var(--muted);font-size:12px}
+.stat .v{font-weight:800;font-size:19px;margin-top:4px;font-variant-numeric:tabular-nums}
+.sectitle{font-size:12.5px;color:var(--muted);font-weight:700;margin:22px 0 2px;letter-spacing:.3px}
+
+/* 새 기본 데이터 알림 배너 */
+.banner{
+  background:var(--accent);color:var(--on-accent);border-radius:14px;padding:13px 14px;
+  margin:10px 0;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)
+}
+.banner .bt{flex:1;font-size:13.5px;font-weight:600;line-height:1.4}
+.banner button{
+  background:var(--accent-btn);border:none;color:var(--on-accent);border-radius:9px;
+  padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap
+}
+.banner button.x{background:none;padding:8px 4px;opacity:.75;font-size:16px}
+
+nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  background:var(--card);border-top:1px solid var(--line);
+  display:flex;padding-bottom:env(safe-area-inset-bottom)
+}
+nav button{
+  flex:1;background:none;border:none;padding:10px 0 12px;cursor:pointer;
+  color:var(--muted);font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px
+}
+nav button .ico{font-size:19px;line-height:1}
+nav button.on{color:var(--accent)}
+
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40;display:flex;
+  align-items:flex-end;justify-content:center}
+.sheet{
+  background:var(--bg);width:100%;max-width:720px;border-radius:18px 18px 0 0;
+  padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto
+}
+.sheet h2{margin:0 0 14px;font-size:17px}
+label{display:block;font-size:12.5px;color:var(--muted);font-weight:600;margin:12px 0 5px}
+input[type=text],input[type=number],input[type=date]{
+  width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card);color:var(--text);font-size:16px;outline:none;font-family:inherit
+}
+input:focus{border-color:var(--accent)}
+.hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+.row2{display:flex;gap:10px}.row2>div{flex:1}
+.calc{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--accent-soft);
+  color:var(--accent);font-weight:700;font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav id="nav"></nav>
+<div id="modal"></div>
+
+<script src="data.js"></script>
+<script>
+"use strict";
+
+/* ============================================================
+   데이터 계층
+
+   기본 데이터(data.js) + 사용자가 앱에서 넣은 데이터(localStorage)
+   를 합쳐서 보여준다.
+
+   - origin:"base"  → data.js 에서 온 것. data.js 를 갱신하면 덮어써짐
+   - origin:"local" → 사용자가 앱에서 추가한 것. 갱신해도 살아남음
+   ============================================================ */
+
+const KEY = "gonggu-list-v1";
+const BASE = (window.GONGGU_DATA && Array.isArray(window.GONGGU_DATA.groups))
+  ? window.GONGGU_DATA
+  : { version: 0, groups: [] };
+
+const uid = () => "u" + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+
+/* data.js 한 벌을 그대로 앱 데이터로 변환 (최초 실행 / 전체 초기화용) */
+function fromBase() {
+  return {
+    schema: 1,
+    dataVersion: BASE.version,
+    dismissed: BASE.version,
+    groups: BASE.groups.map(cloneBaseGroup)
+  };
+}
+
+function cloneBaseGroup(bg) {
+  return {
+    id: bg.id, title: bg.title, date: bg.date, type: bg.type, origin: "base",
+    items: (bg.items || []).map(i => ({
+      id: i.id, name: i.name, qty: i.qty, price: i.price,
+      holders: (i.holders || []).slice(), origin: "base"
+    }))
+  };
+}
+
+/* 옛 형식(schema 없음)으로 저장된 데이터 이사시키기.
+   기본 데이터와 같은 공구(이름+날짜 동일)는 중복되니 걷어내고,
+   직접 넣었던 공구만 local 로 살려 둔다. */
+function migrate(old) {
+  if (!old || !Array.isArray(old.groups)) return fromBase();
+  if (old.schema >= 1) return old;
+
+  const baseKeys = BASE.groups.map(g => g.title + "|" + g.date);
+  const kept = old.groups
+    .filter(g => baseKeys.indexOf(g.title + "|" + g.date) < 0)
+    .map(g => ({
+      id: g.id || uid(), title: g.title, date: g.date, type: g.type || "host", origin: "local",
+      items: (g.items || []).map(i => ({
+        id: i.id || uid(), name: i.name, qty: i.qty, price: i.price,
+        holders: (i.holders || []).slice(), origin: "local"
+      }))
+    }));
+
+  const fresh = fromBase();
+  fresh.groups = fresh.groups.concat(kept);
+  return fresh;
+}
+
+let DB;
+try { DB = JSON.parse(localStorage.getItem(KEY)); } catch (e) { DB = null; }
+DB = migrate(DB);
+
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) {} };
+
+/* data.js 의 version 이 올라갔는지 */
+const hasUpdate = () => BASE.version > (DB.dataVersion || 0);
+
+/* 기본 데이터 반영 — 사용자가 직접 추가한 공구·품목은 보존한다 */
+function applyBase() {
+  const localGroups = DB.groups.filter(g => g.origin === "local");
+
+  const merged = BASE.groups.map(bg => {
+    const old = DB.groups.find(g => g.id === bg.id);
+    const keptItems = old ? old.items.filter(i => i.origin === "local") : [];
+    const fresh = cloneBaseGroup(bg);
+    fresh.items = fresh.items.concat(keptItems);
+    return fresh;
+  });
+
+  DB.groups = merged.concat(localGroups);
+  DB.dataVersion = BASE.version;
+  DB.dismissed = BASE.version;
+  save();
+}
+
+/* ========== 헬퍼 ========== */
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const won = n => (Number(n) || 0).toLocaleString("ko-KR");
+const lineTotal = it => (Number(it.qty) || 0) * (Number(it.price) || 0);
+const groupTotal = g => g.items.reduce((s, it) => s + lineTotal(it), 0);
+const groupQty = g => g.items.reduce((s, it) => s + (Number(it.qty) || 0), 0);
+const holderLabel = g => g.type === "joined" ? "공구주" : "선점자";
+const fmtDate = d => {
+  if (!d) return "";
+  const p = String(d).split("-");
+  return p.length === 3 ? `${p[0]}.${p[1]}.${p[2]}` : String(d);
+};
+const sorted = type => DB.groups
+  .filter(g => g.type === type)
+  .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+const findGroup = id => DB.groups.find(g => g.id === id);
+const parseHolders = s => String(s || "").split(/[,/·]/).map(x => x.trim()).filter(Boolean);
+
+/* ========== 상태 ========== */
+const S = { view: "list", tab: "host", groupId: null, q: "" };
+
+/* ========== 배너 ========== */
+function banner() {
+  if (!hasUpdate() || DB.dismissed === BASE.version) return "";
+  return `
+    <div class="banner">
+      <div class="bt">새 기본 데이터가 있어요 (v${BASE.version})<br>
+        <span style="font-weight:500;opacity:.85">직접 추가하신 공구·품목은 그대로 유지돼요</span></div>
+      <button data-applybase="1">불러오기</button>
+      <button class="x" data-dismiss="1">✕</button>
+    </div>`;
+}
+
+/* ========== 뷰: 목록 ========== */
+function viewList() {
+  const list = sorted(S.tab);
+  const cards = list.length ? list.map(g => `
+    <div class="card" data-open="${esc(g.id)}">
+      <div class="body">
+        <div class="t">${esc(g.title)}</div>
+        <div class="m">${fmtDate(g.date)} · 품목 ${g.items.length}개 · ${groupQty(g)}점</div>
+      </div>
+      <div class="amt">${won(groupTotal(g))}원</div>
+      <div class="chev">›</div>
+    </div>`).join("")
+    : `<div class="empty">아직 등록된 공구가 없어요.<br>아래 버튼으로 하나 만들어 보세요.</div>`;
+
+  return `
+    <header>
+      <h1>공구 리스트</h1>
+      <div class="sub">전체 ${DB.groups.length}개 공구 · 총 ${won(DB.groups.reduce((s, g) => s + groupTotal(g), 0))}원</div>
+      <div class="tabs">
+        <button data-tab="host" class="${S.tab === "host" ? "on" : ""}">내 공구</button>
+        <button data-tab="joined" class="${S.tab === "joined" ? "on" : ""}">참여 공구</button>
+      </div>
+    </header>
+    ${banner()}
+    ${cards}
+    <button class="btn primary" data-newgroup="1">+ 공구 추가</button>
+  `;
+}
+
+/* ========== 뷰: 공구 상세 ========== */
+function viewDetail() {
+  const g = findGroup(S.groupId);
+  if (!g) { S.view = "list"; return viewList(); }
+
+  const rows = g.items.map(it => `
+    <tr>
+      <td class="name">${esc(it.name)}</td>
+      <td class="num">${won(it.qty)}</td>
+      <td class="num">${won(it.price)}</td>
+      <td class="num">${won(lineTotal(it))}</td>
+      <td>${(it.holders || []).map(h => `<span class="who">${esc(h)}</span>`).join("") || "–"}</td>
+      <td class="num"><button class="rowact" data-edititem="${esc(it.id)}">✏️</button></td>
+    </tr>`).join("");
+
+  const table = g.items.length ? `
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>품목</th><th class="num">갯수</th><th class="num">단가</th>
+          <th class="num">총계</th><th>${holderLabel(g)}</th><th></th>
+        </tr></thead>
+        <tbody>
+          ${rows}
+          <tr class="sum">
+            <td>계</td>
+            <td class="num">${won(groupQty(g))}</td>
+            <td class="num">–</td>
+            <td class="num">${won(groupTotal(g))}</td>
+            <td>–</td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`
+    : `<div class="empty">품목이 없어요. 아래에서 추가해 주세요.</div>`;
+
+  return `
+    <header>
+      <button class="backbtn" data-back="1">‹ 목록</button>
+      <h1>${esc(g.title)}</h1>
+      <div class="sub">${fmtDate(g.date)}${g.type === "joined" ? " · 내가 참여한 공구" : ""}</div>
+    </header>
+    ${table}
+    <button class="btn primary" data-newitem="1">+ 품목 추가</button>
+    <button class="btn" data-editgroup="1">공구 정보 수정</button>
+    <button class="btn danger" data-delgroup="1">이 공구 삭제</button>
+  `;
+}
+
+/* ========== 뷰: 검색 ==========
+   주의: 입력창(#q)은 절대 다시 그리지 않는다.
+   글자를 칠 때마다 input 을 innerHTML 로 갈아끼우면 한글 IME 의 조합 상태가
+   끊겨서 "카와" 가 "ㅋㅏㅇㅘ" 로 쪼개진다. 결과 영역(#results)만 갱신할 것. */
+function searchResults() {
+  const q = S.q.trim();
+  if (!q) return `<div class="empty">품목 이름 일부만 입력해도<br>모든 공구에서 찾아드려요.</div>`;
+
+  const lower = q.toLowerCase();
+  const hits = [];
+  DB.groups.forEach(g => g.items.forEach(it => {
+    if (String(it.name).toLowerCase().includes(lower)) hits.push({ g: g, it: it });
+  }));
+
+  if (!hits.length) return `<div class="empty">"${esc(q)}" 와 일치하는 품목이 없어요.</div>`;
+
+  const hl = name => {
+    const s = String(name);
+    const i = s.toLowerCase().indexOf(lower);
+    if (i < 0) return esc(s);
+    return esc(s.slice(0, i)) + "<mark>" + esc(s.slice(i, i + q.length)) + "</mark>" + esc(s.slice(i + q.length));
+  };
+
+  return `
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>품목</th><th>어느 공구</th><th>선점자</th></tr></thead>
+        <tbody>
+          ${hits.map(h => `
+            <tr data-open="${esc(h.g.id)}" style="cursor:pointer">
+              <td class="name">${hl(h.it.name)}</td>
+              <td style="color:var(--muted);font-size:12.5px">${esc(h.g.title)}</td>
+              <td>${(h.it.holders || []).map(x => `<span class="who">${esc(x)}</span>`).join("") || "–"}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+    <div class="sub" style="text-align:center">${hits.length}건 · 행을 누르면 해당 공구로 이동해요</div>`;
+}
+
+function viewSearch() {
+  return `
+    <header>
+      <h1>품목 검색</h1>
+      <div class="sub">모든 공구를 통틀어 선점자를 찾아요</div>
+    </header>
+    <input class="search" id="q" type="text" placeholder="예: 치이" value="${esc(S.q)}"
+           autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div id="results"></div>
+  `;
+}
+
+/* ========== 뷰: 요약 · 관리 ========== */
+function viewMore() {
+  const all = DB.groups;
+  const total = all.reduce((s, g) => s + groupTotal(g), 0);
+  const hostTotal = all.filter(g => g.type === "host").reduce((s, g) => s + groupTotal(g), 0);
+  const joinedTotal = all.filter(g => g.type === "joined").reduce((s, g) => s + groupTotal(g), 0);
+  const items = all.reduce((s, g) => s + g.items.length, 0);
+
+  const byHolder = {};
+  all.forEach(g => g.items.forEach(it => {
+    const hs = it.holders || [];
+    hs.forEach(h => {
+      byHolder[h] = byHolder[h] || { cnt: 0, sum: 0 };
+      byHolder[h].cnt += (Number(it.qty) || 0) / hs.length;
+      byHolder[h].sum += lineTotal(it) / hs.length;
+    });
+  }));
+  const holders = Object.keys(byHolder)
+    .map(h => [h, byHolder[h]])
+    .sort((a, b) => b[1].sum - a[1].sum);
+
+  return `
+    <header>
+      <h1>요약 · 관리</h1>
+      <div class="sub">지출 현황과 백업</div>
+    </header>
+    ${banner()}
+
+    <div class="stat">
+      <div><div class="k">전체 공구</div><div class="v">${all.length}</div></div>
+      <div><div class="k">전체 품목</div><div class="v">${items}</div></div>
+    </div>
+    <div class="stat">
+      <div><div class="k">내 공구 합계</div><div class="v">${won(hostTotal)}</div></div>
+      <div><div class="k">참여 공구 합계</div><div class="v">${won(joinedTotal)}</div></div>
+    </div>
+    <div class="stat"><div><div class="k">총 지출</div><div class="v">${won(total)}원</div></div></div>
+
+    <div class="sectitle">선점자별 집계</div>
+    ${holders.length ? `
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>선점자</th><th class="num">점수</th><th class="num">금액</th></tr></thead>
+          <tbody>
+            ${holders.map(h => `
+              <tr><td class="name">${esc(h[0])}</td>
+                  <td class="num">${won(Math.round(h[1].cnt * 10) / 10)}</td>
+                  <td class="num">${won(Math.round(h[1].sum))}</td></tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+      <div class="hint">한 품목에 여러 명이면 인원수로 나눠서 계산했어요.</div>`
+      : `<div class="empty">데이터가 없어요.</div>`}
+
+    <div class="sectitle">데이터</div>
+    <button class="btn" data-export="1">JSON으로 내보내기 (백업)</button>
+    <button class="btn" data-import="1">JSON 불러오기</button>
+    <button class="btn" data-applybase="1">기본 데이터 다시 불러오기</button>
+    <button class="btn danger" data-reset="1">전체 초기화 (기본 데이터만 남김)</button>
+    <div class="hint" style="text-align:center;margin:14px 0 4px">
+      기본 데이터 v${BASE.version} · 적용됨 v${DB.dataVersion || 0}<br><br>
+      내가 앱에서 넣은 데이터는 이 기기의 브라우저에만 있어요.
+      브라우저 데이터를 지우면 사라지니 가끔 내보내기로 백업해 두세요.
+    </div>
+  `;
+}
+
+/* ========== 렌더 ========== */
+function render() {
+  document.getElementById("app").innerHTML =
+    S.view === "list" ? viewList() :
+    S.view === "detail" ? viewDetail() :
+    S.view === "search" ? viewSearch() : viewMore();
+
+  const tabs = [["list", "📋", "목록"], ["search", "🔍", "검색"], ["more", "📊", "요약"]];
+  document.getElementById("nav").innerHTML = tabs.map(t => `
+    <button data-nav="${t[0]}" class="${(S.view === t[0] || (t[0] === "list" && S.view === "detail")) ? "on" : ""}">
+      <span class="ico">${t[1]}</span>${t[2]}
+    </button>`).join("");
+
+  if (S.view === "search") {
+    document.getElementById("results").innerHTML = searchResults();
+    const q = document.getElementById("q");
+    q.focus();
+    q.setSelectionRange(q.value.length, q.value.length);
+  }
+}
+
+/* ========== 모달 ========== */
+function closeModal() { document.getElementById("modal").innerHTML = ""; }
+
+function openSheet(html, onSubmit) {
+  const m = document.getElementById("modal");
+  m.innerHTML = `<div class="mask"><div class="sheet"><form id="f">${html}
+    <button type="submit" class="btn primary">저장</button>
+    <button type="button" class="btn" data-cancel="1">취소</button>
+  </form></div></div>`;
+  m.querySelector(".mask").addEventListener("click", e => {
+    if (e.target.classList.contains("mask")) closeModal();
+  });
+  m.querySelector("[data-cancel]").addEventListener("click", closeModal);
+  m.querySelector("#f").addEventListener("submit", e => {
+    e.preventDefault();
+    const d = {};
+    new FormData(e.target).forEach((v, k) => { d[k] = v; });
+    if (onSubmit(d) !== false) { save(); closeModal(); render(); }
+  });
+  const first = m.querySelector("input");
+  if (first) first.focus();
+}
+
+function groupForm(g) {
+  const isNew = !g;
+  openSheet(`
+    <h2>${isNew ? "공구 추가" : "공구 수정"}</h2>
+    <label>공구 이름</label>
+    <input type="text" name="title" value="${esc(g ? g.title : "")}" placeholder="예: 9/25 할로윈 마코 공구" required>
+    <label>날짜</label>
+    <input type="date" name="date" value="${esc(g ? g.date : new Date().toISOString().slice(0, 10))}">
+  `, d => {
+    if (isNew) {
+      const ng = { id: uid(), title: d.title.trim(), date: d.date, type: S.tab, origin: "local", items: [] };
+      DB.groups.push(ng);
+      S.view = "detail"; S.groupId = ng.id;
+    } else {
+      g.title = d.title.trim();
+      g.date = d.date;
+    }
+  });
+}
+
+function itemForm(g, it) {
+  const isNew = !it;
+  openSheet(`
+    <h2>${isNew ? "품목 추가" : "품목 수정"}</h2>
+    <label>품목</label>
+    <input type="text" name="name" value="${esc(it ? it.name : "")}" placeholder="예: 간호사 치이카와" required>
+    <div class="row2">
+      <div><label>갯수</label><input type="number" name="qty" min="0" step="1" value="${it ? it.qty : 1}" required></div>
+      <div><label>단가</label><input type="number" name="price" min="0" step="10" value="${it ? it.price : ""}" placeholder="19800" required></div>
+    </div>
+    <div class="calc" id="calc">총계 0원</div>
+    <label>${holderLabel(g)}</label>
+    <input type="text" name="holders" value="${esc(it ? (it.holders || []).join(", ") : "")}" placeholder="여러 명이면 쉼표로 (예: 투스, 공구주)">
+    <div class="hint">쉼표( , ) 또는 슬래시( / )로 구분하면 여러 명으로 저장돼요.</div>
+    ${isNew ? "" : `<button type="button" class="btn danger" data-delitem="1">이 품목 삭제</button>`}
+  `, d => {
+    const data = {
+      name: d.name.trim(),
+      qty: Number(d.qty) || 0,
+      price: Number(d.price) || 0,
+      holders: parseHolders(d.holders)
+    };
+    if (isNew) {
+      g.items.push({
+        id: uid(), origin: "local",
+        name: data.name, qty: data.qty, price: data.price, holders: data.holders
+      });
+    } else {
+      it.name = data.name; it.qty = data.qty; it.price = data.price; it.holders = data.holders;
+    }
+  });
+
+  const f = document.getElementById("f");
+  const calc = () => {
+    const q = Number(f.qty.value) || 0, p = Number(f.price.value) || 0;
+    document.getElementById("calc").textContent = `총계 ${won(q * p)}원`;
+  };
+  f.qty.addEventListener("input", calc);
+  f.price.addEventListener("input", calc);
+  calc();
+
+  const del = f.querySelector("[data-delitem]");
+  if (del) del.addEventListener("click", () => {
+    if (!confirm(`"${it.name}" 품목을 삭제할까요?`)) return;
+    g.items = g.items.filter(x => x.id !== it.id);
+    save(); closeModal(); render();
+  });
+}
+
+/* ========== 백업 ========== */
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(DB, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `공구리스트_${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function importJSON() {
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json,.json";
+  inp.addEventListener("change", () => {
+    const file = inp.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const data = JSON.parse(r.result);
+        if (!data || !Array.isArray(data.groups)) throw new Error("형식이 달라요");
+        if (!confirm(`공구 ${data.groups.length}개를 불러옵니다. 지금 데이터는 덮어써져요. 계속할까요?`)) return;
+        DB = migrate(data);
+        save(); S.view = "list"; render();
+      } catch (e) { alert("불러오기 실패: " + e.message); }
+    };
+    r.readAsText(file);
+  });
+  inp.click();
+}
+
+/* ========== 이벤트 (위임) ========== */
+document.addEventListener("click", e => {
+  const pick = attr => (e.target.closest ? e.target.closest("[" + attr + "]") : null);
+  let n;
+
+  if ((n = pick("data-nav"))) { S.view = n.dataset.nav; render(); return; }
+  if ((n = pick("data-tab"))) { S.tab = n.dataset.tab; render(); return; }
+  if ((n = pick("data-open"))) { S.groupId = n.dataset.open; S.view = "detail"; render(); return; }
+  if (pick("data-back")) { S.view = "list"; render(); return; }
+
+  if (pick("data-applybase")) {
+    if (!hasUpdate() && !confirm("기본 데이터를 다시 불러올까요? 기본 항목에 해 둔 수정은 되돌아가고, 직접 추가하신 공구·품목은 그대로 유지돼요.")) return;
+    applyBase(); render(); return;
+  }
+  if (pick("data-dismiss")) { DB.dismissed = BASE.version; save(); render(); return; }
+
+  if (pick("data-newgroup")) { groupForm(null); return; }
+  if (pick("data-editgroup")) { groupForm(findGroup(S.groupId)); return; }
+  if (pick("data-newitem")) { itemForm(findGroup(S.groupId), null); return; }
+  if ((n = pick("data-edititem"))) {
+    const g = findGroup(S.groupId);
+    const it = g.items.find(x => x.id === n.dataset.edititem);
+    if (it) itemForm(g, it);
+    return;
+  }
+  if (pick("data-delgroup")) {
+    const g = findGroup(S.groupId);
+    if (!confirm(`"${g.title}" 공구를 품목까지 전부 삭제할까요?`)) return;
+    DB.groups = DB.groups.filter(x => x.id !== g.id);
+    save(); S.view = "list"; render(); return;
+  }
+
+  if (pick("data-export")) { exportJSON(); return; }
+  if (pick("data-import")) { importJSON(); return; }
+  if (pick("data-reset")) {
+    if (!confirm("직접 추가한 것까지 전부 지우고 기본 데이터만 남길까요? 되돌릴 수 없어요.")) return;
+    DB = fromBase(); save(); S.view = "list"; render(); return;
+  }
+});
+
+/* 검색어 입력 — render() 를 부르지 않는다 (위 viewSearch 주석 참고) */
+function onSearchInput(e) {
+  if (e.target.id !== "q") return;
+  S.q = e.target.value;
+  const box = document.getElementById("results");
+  if (box) box.innerHTML = searchResults();
+}
+document.addEventListener("input", onSearchInput);
+document.addEventListener("compositionend", onSearchInput);
+
+render();
+
+/* ========== 오프라인 지원 (https / localhost 에서만 동작) ========== */
+if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
