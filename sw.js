@@ -3,7 +3,7 @@
    → 캐시에 있으면 즉시 보여주고(오프라인에서도 열림),
      뒤에서 몰래 새 버전을 받아 캐시를 갱신한다(다음에 열면 최신). */
 
-const CACHE = "gonggu-v4";
+const CACHE = "gonggu-v5";
 const SHELL = [
   "./",
   "./index.html",
