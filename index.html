@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#faf7f6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1a1618" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="themecolor" content="#faf7f6">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -35,8 +34,11 @@
   --mark:#ffe6a8;
   --shadow:0 1px 2px rgba(0,0,0,.04), 0 6px 18px rgba(90,60,70,.06);
 }
+/* 다크 색값은 두 경우에 적용됩니다. 값이 같으니 한쪽만 고치지 마세요.
+   (1) 기기가 다크 모드이고 사용자가 "밝게"로 고정하지 않았을 때
+   (2) 사용자가 설정에서 "어둡게"를 직접 고른 때 */
 @media (prefers-color-scheme: dark){
-  :root{
+  :root:not([data-theme="light"]){
     --bg:#1a1618; --card:#241f21; --line:#38302f; --text:#f0e9ea; --muted:#a89a9d;
     --accent:#e9a3b4;
     --accent-soft:#39272c;
@@ -47,6 +49,17 @@
     --mark:#6f5a2a;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
   }
+}
+:root[data-theme="dark"]{
+    --bg:#1a1618; --card:#241f21; --line:#38302f; --text:#f0e9ea; --muted:#a89a9d;
+    --accent:#e9a3b4;
+    --accent-soft:#39272c;
+    --on-accent:#2a1b20;
+    --accent-btn:rgba(0,0,0,.14);
+    --ok:#8fc0a0; --ok-soft:#25352b;
+    --warn:#dcb173; --warn-soft:#3a3021;
+    --mark:#6f5a2a;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -264,7 +277,8 @@ const DEFAULT_SETTINGS = {
   graceDays: 20,       // 유예기간 (일)
   shipRound: true,     // 배송비 분담액을 반올림해서 보여줄지
   shipMode: "person",  // 새 공구의 배송비 분배 기본값: "person"(인원) | "qty"(갯수)
-  myName: "공구주"      // 내 몫을 구분하기 위한 내 닉네임
+  myName: "공구주",     // 내 몫을 구분하기 위한 내 닉네임
+  theme: "auto"        // 화면 테마: "auto"(폰 설정 따름) | "light" | "dark"
 };
 
 /* data.js 한 벌을 그대로 앱 데이터로 변환 (최초 실행 / 전체 초기화용) */
@@ -301,6 +315,7 @@ function normalize(db) {
   db.settings = Object.assign({}, DEFAULT_SETTINGS, db.settings || {});
   db.settings.graceDays = Math.max(0, Number(db.settings.graceDays) || 0);
   if (db.settings.shipMode !== "qty") db.settings.shipMode = "person";
+  if (["auto", "light", "dark"].indexOf(db.settings.theme) < 0) db.settings.theme = "auto";
   (db.groups || []).forEach(g => {
     if (typeof g.chatUrl !== "string") g.chatUrl = "";
     g.shipIntl = Number(g.shipIntl) || 0;
@@ -522,6 +537,33 @@ function purgeExpired() {
     purgeNotice = "완료 후 " + DB.settings.graceDays + "일이 지난 공구 " +
       gone.length + "개를 정리했어요 (" + gone.join(", ") + ")";
   }
+}
+
+/* ========== 화면 테마 ==========
+   "auto" 는 폰 설정을 따라가고, "light"/"dark" 는 직접 고정한다.
+   고정할 때는 <html data-theme="..."> 를 달아 CSS 가 그걸 보게 한다. */
+function isDarkNow() {
+  const t = DB.settings.theme;
+  if (t === "dark") return true;
+  if (t === "light") return false;
+  return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
+
+function applyTheme() {
+  const t = DB.settings.theme;
+  const root = document.documentElement;
+  if (t === "auto") root.removeAttribute("data-theme");
+  else root.setAttribute("data-theme", t);
+
+  /* 아이폰 상태표시줄 색도 같이 맞춘다 */
+  const meta = document.getElementById("themecolor");
+  if (meta) meta.setAttribute("content", isDarkNow() ? "#1a1618" : "#faf7f6");
+}
+
+/* 자동일 때 폰 설정이 바뀌면 상태표시줄 색도 따라가도록 */
+if (window.matchMedia) {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", () => applyTheme());
 }
 
 /* ========== 상태 ========== */
@@ -901,7 +943,18 @@ function viewMore() {
       '공구 안에서 선점자 이름을 누르면 입력할 수 있어요.</div>';
 
   /* 설정 */
+  const themeBtn = (v, t) =>
+    '<button type="button" data-settheme="' + v + '" class="' +
+    (DB.settings.theme === v ? "on" : "") + '">' + t + '</button>';
+
   out += '<div class="sectitle">설정</div>' +
+    '<div class="setrow" style="display:block">' +
+      '<div class="sk">화면 테마</div>' +
+      '<div class="sd">자동은 폰 설정(다크 모드)을 따라가요</div>' +
+      '<div class="seg" style="margin-top:10px">' +
+        themeBtn("auto", "자동") + themeBtn("light", "밝게") + themeBtn("dark", "어둡게") +
+      '</div>' +
+    '</div>' +
     '<div class="setrow"><div class="sbody">' +
       '<div class="sk">내 닉네임</div>' +
       '<div class="sd">정산에서 내 몫을 구분하는 이름이에요</div>' +
@@ -1309,6 +1362,11 @@ document.addEventListener("click", e => {
   if ((n = pick("data-open"))) { S.groupId = n.dataset.open; S.view = "detail"; render(); return; }
   if (pick("data-back")) { S.view = "list"; render(); return; }
 
+  if ((n = pick("data-settheme"))) {
+    DB.settings.theme = n.dataset.settheme;
+    save(); applyTheme(); render(); return;
+  }
+
   if (pick("data-shipmode")) {
     DB.settings.shipMode = DB.settings.shipMode === "person" ? "qty" : "person";
     save(); render(); return;
@@ -1407,6 +1465,7 @@ document.addEventListener("change", e => {
   }
 });
 
+applyTheme();
 purgeExpired();
 render();
 
