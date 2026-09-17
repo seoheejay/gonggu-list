@@ -13,6 +13,7 @@ manifest.webmanifest    홈 화면 추가용 설정
 sw.js                   오프라인 캐싱
 icons/                  앱 아이콘
 GUIDE.md                앱 사용자용 사용법
+UPDATE.md               업데이트 안내 · 피드백 요청
 LICENSE                 MIT 라이선스
 ```
 
