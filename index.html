@@ -134,6 +134,10 @@ tr:last-child td{border-bottom:none}
 .who.me{background:var(--ok-soft);color:var(--ok)}
 .rowact{color:var(--muted);cursor:pointer;padding:0 4px;background:none;border:none;font-size:14px}
 .paid{color:var(--ok);font-weight:800}
+.pillbtn{background:var(--accent-soft);color:var(--accent);border:1px solid transparent;
+  border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;
+  white-space:nowrap;font-family:inherit}
+.pillbtn:active{opacity:.6}
 .unpaid{color:var(--muted)}
 
 .empty{text-align:center;color:var(--muted);padding:48px 16px;font-size:14px}
@@ -904,15 +908,20 @@ function viewMore() {
   /* 입금 대기 */
   if (waiting.length) {
     out += '<div class="sectitle">입금 대기 (' + waiting.length + '건)</div>' +
-      '<div class="tablewrap"><table><tbody>' + waiting.map(w =>
+      '<div class="tablewrap"><table><thead><tr>' +
+        '<th>선점자</th><th>어느 공구</th><th class="num">받을 금액</th><th class="mid">입금</th>' +
+      '</tr></thead><tbody>' + waiting.map(w =>
         '<tr><td class="name" data-person="' + esc(w.p.name) + '" data-pgroup="' + esc(w.g.id) +
           '" style="cursor:pointer">' + esc(w.p.name) + '</td>' +
         '<td style="color:var(--muted);font-size:12.5px" data-open="' + esc(w.g.id) +
-          '" >' + esc(w.g.title) + '</td>' +
+          '">' + esc(w.g.title) + '</td>' +
         '<td class="num">' + won(Math.round(w.p.total)) + '</td>' +
-        '<td class="mid unpaid" data-togglepaid="' + esc(w.p.name) +
-          '" data-pgroup="' + esc(w.g.id) + '">○</td></tr>'
-      ).join("") + '</tbody></table></div>';
+        '<td class="mid"><button type="button" class="pillbtn" data-togglepaid="' + esc(w.p.name) +
+          '" data-pgroup="' + esc(w.g.id) + '">입금 확인</button></td></tr>'
+      ).join("") + '</tbody></table></div>' +
+      '<div class="hint">입금받으면 <b>입금 확인</b>을 눌러 주세요. 목록에서 빠집니다. ' +
+      '(삭제되는 게 아니라 입금 완료로 바뀌는 거예요)<br>' +
+      '이름을 누르면 배송 정보, 공구 이름을 누르면 그 공구로 갑니다.</div>';
   }
 
   /* 선점자별 집계 */
