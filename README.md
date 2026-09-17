@@ -14,6 +14,7 @@ index.html              앱 전체 (화면 + 로직)
 data.js                 기본 데이터  ← 보통 이 파일만 고치면 됩니다
 manifest.webmanifest    홈 화면 추가용 설정
 sw.js                   오프라인 캐싱
+privacy.html            개인정보처리방침 (AdSense 필수 요건)
 icons/                  앱 아이콘
 GUIDE.md                앱 사용자용 사용법
 UPDATE.md               업데이트 안내 · 피드백 요청
