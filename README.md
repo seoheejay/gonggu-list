@@ -3,7 +3,10 @@
 공동구매 품목과 선점자를 폰에서 바로 보는 개인용 앱.
 서버·DB·로그인 없음. 파일 몇 개가 전부고, 데이터는 기기 안에만 저장됩니다.
 
+**▶ 바로 써보기 — https://seoheejay.github.io/gonggu-list/**
+
 > 📱 **앱을 쓰실 분은 [사용법 문서(GUIDE.md)](GUIDE.md)를 보세요.**
+> 바뀐 내용은 [업데이트 안내(UPDATE.md)](UPDATE.md)에 있습니다.
 > 아래는 배포·관리하는 사람용 문서입니다.
 
 ```
@@ -33,19 +36,20 @@ LICENSE                 MIT 라이선스
 ## 2. 폰에서 앱처럼 쓰기 — GitHub Pages
 
 한 번만 해두면 그 뒤로는 PC도 서버도 필요 없습니다.
+이 저장소를 **Fork** 하거나, 파일을 받아서 본인 저장소에 올리면 됩니다.
 
 ```bash
-cd C:\Users\septe\gonggu-list
+cd 공구리스트-폴더        # 파일을 받아 둔 폴더로 이동
 git init
 git add .
 git commit -m "공구 리스트 앱"
 git branch -M main
-git remote add origin https://github.com/<아이디>/<저장소>.git
+git remote add origin https://github.com/<본인-아이디>/<저장소-이름>.git
 git push -u origin main
 ```
 
 그다음 GitHub 저장소에서 **Settings → Pages → Source: `main` / `(root)`** 선택.
-1~2분 뒤 `https://<아이디>.github.io/<저장소>/` 주소가 생깁니다.
+1~2분 뒤 `https://<본인-아이디>.github.io/<저장소-이름>/` 주소가 생깁니다.
 
 폰에서 그 주소를 열고:
 
