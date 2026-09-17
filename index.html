@@ -168,9 +168,12 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
   border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .tgl.on{background:var(--accent)}
 .tgl.on::after{left:22px}
-.numin{width:70px;padding:8px;border-radius:9px;border:1px solid var(--line);
+/* 주의: 아래 input[type=...] 규칙이 width:100% 를 걸기 때문에
+   클래스 하나만으로는 우선순위에서 밀린다. .setrow 를 붙여 두 클래스로
+   올려야 설정 행에서 입력칸이 폭을 다 먹어버리지 않는다. */
+.setrow .numin{width:70px;padding:8px;border-radius:9px;border:1px solid var(--line);
   background:var(--bg);color:var(--text);font-size:15px;text-align:right;flex:none}
-.textin{width:120px;padding:8px;border-radius:9px;border:1px solid var(--line);
+.setrow .textin{width:130px;padding:8px;border-radius:9px;border:1px solid var(--line);
   background:var(--bg);color:var(--text);font-size:15px;flex:none}
 
 /* 알림 배너 */
