@@ -30,6 +30,7 @@
   --accent-soft:#fceef1;     /* 연한 배경 — 선점자 칩, 합계 행 */
   --on-accent:#fff;          /* 포인트색 위에 올라가는 글자색 */
   --accent-btn:rgba(255,255,255,.22);
+  --ok:#3f7a52; --ok-soft:#e6f1e9;
   --mark:#ffe6a8;
   --shadow:0 1px 2px rgba(0,0,0,.04), 0 6px 18px rgba(90,60,70,.06);
 }
@@ -40,6 +41,7 @@
     --accent-soft:#39272c;
     --on-accent:#2a1b20;
     --accent-btn:rgba(0,0,0,.14);
+    --ok:#8fc0a0; --ok-soft:#25352b;
     --mark:#6f5a2a;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
   }
@@ -84,6 +86,11 @@ h1{font-size:22px;margin:0;letter-spacing:-.4px}
 .card .amt{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;white-space:nowrap}
 .chev{color:var(--muted);font-size:18px}
 
+.badge{display:inline-block;border-radius:6px;padding:1px 7px;font-size:11px;
+  font-weight:700;margin-left:6px;vertical-align:middle;
+  background:var(--accent-soft);color:var(--accent)}
+.badge.done{background:var(--ok-soft);color:var(--ok)}
+
 .tablewrap{
   background:var(--card);border:1px solid var(--line);border-radius:14px;
   overflow-x:auto;box-shadow:var(--shadow);margin:12px 0
@@ -93,10 +100,13 @@ th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white
 th{font-size:12px;color:var(--muted);font-weight:600;background:transparent}
 td.name{white-space:normal;min-width:110px;font-weight:500}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td.ship,th.ship{color:var(--muted)}
 tr.sum td{border-bottom:none;font-weight:800;background:var(--accent-soft)}
 tr:last-child td{border-bottom:none}
 .who{display:inline-block;background:var(--accent-soft);color:var(--accent);
-  border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;margin:1px 3px 1px 0}
+  border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;margin:1px 3px 1px 0;
+  cursor:pointer;border:1px solid transparent}
+.who.has{border-color:var(--accent)}
 .rowact{color:var(--muted);cursor:pointer;padding:0 4px;background:none;border:none;font-size:14px}
 
 .empty{text-align:center;color:var(--muted);padding:48px 16px;font-size:14px}
@@ -108,9 +118,11 @@ tr:last-child td{border-bottom:none}
 mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .btn{
   display:block;width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);
-  background:var(--card);color:var(--text);font-size:14.5px;font-weight:600;cursor:pointer;margin:8px 0
+  background:var(--card);color:var(--text);font-size:14.5px;font-weight:600;cursor:pointer;margin:8px 0;
+  text-align:center;text-decoration:none
 }
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.ok{background:var(--ok-soft);border-color:var(--ok-soft);color:var(--ok)}
 .btn.danger{color:#c2483f;border-color:var(--line)}
 .stat{display:flex;gap:10px;margin:12px 0}
 .stat>div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;
@@ -119,16 +131,43 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .stat .v{font-weight:800;font-size:19px;margin-top:4px;font-variant-numeric:tabular-nums}
 .sectitle{font-size:12.5px;color:var(--muted);font-weight:700;margin:22px 0 2px;letter-spacing:.3px}
 
-/* 새 기본 데이터 알림 배너 */
+/* 정보 카드 (배송비 등) */
+.infocard{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:12px 14px;margin:10px 0;box-shadow:var(--shadow)}
+.infocard .r{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:13.5px;padding:3px 0}
+.infocard .r span{color:var(--muted)}
+.infocard .r b{font-variant-numeric:tabular-nums;font-weight:700}
+.infocard .r.hl b{color:var(--accent);font-size:15px}
+
+/* 설정 행 */
+.setrow{display:flex;align-items:center;gap:12px;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0;
+  box-shadow:var(--shadow)}
+.setrow .sbody{flex:1;min-width:0}
+.setrow .sk{font-weight:700;font-size:14px}
+.setrow .sd{color:var(--muted);font-size:12px;margin-top:2px;line-height:1.4}
+.tgl{width:46px;height:27px;border-radius:14px;border:none;background:var(--line);
+  position:relative;cursor:pointer;flex:none;transition:background .15s}
+.tgl::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;
+  border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.tgl.on{background:var(--accent)}
+.tgl.on::after{left:22px}
+.numin{width:70px;padding:8px;border-radius:9px;border:1px solid var(--line);
+  background:var(--bg);color:var(--text);font-size:15px;text-align:right;flex:none}
+
+/* 알림 배너 */
 .banner{
   background:var(--accent);color:var(--on-accent);border-radius:14px;padding:13px 14px;
   margin:10px 0;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)
 }
+.banner.info{background:var(--card);color:var(--text);border:1px solid var(--line)}
 .banner .bt{flex:1;font-size:13.5px;font-weight:600;line-height:1.4}
 .banner button{
   background:var(--accent-btn);border:none;color:var(--on-accent);border-radius:9px;
   padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap
 }
+.banner.info button{background:var(--accent-soft);color:var(--accent)}
 .banner button.x{background:none;padding:8px 4px;opacity:.75;font-size:16px}
 
 nav{
@@ -149,14 +188,16 @@ nav button.on{color:var(--accent)}
   background:var(--bg);width:100%;max-width:720px;border-radius:18px 18px 0 0;
   padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto
 }
-.sheet h2{margin:0 0 14px;font-size:17px}
+.sheet h2{margin:0 0 4px;font-size:17px}
+.sheet .sheetsub{color:var(--muted);font-size:12.5px;margin-bottom:10px;line-height:1.5}
 label{display:block;font-size:12.5px;color:var(--muted);font-weight:600;margin:12px 0 5px}
-input[type=text],input[type=number],input[type=date]{
+input[type=text],input[type=number],input[type=date],input[type=tel],textarea{
   width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
   background:var(--card);color:var(--text);font-size:16px;outline:none;font-family:inherit
 }
-input:focus{border-color:var(--accent)}
-.hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+textarea{resize:vertical;min-height:64px;line-height:1.5}
+input:focus,textarea:focus{border-color:var(--accent)}
+.hint{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5}
 .row2{display:flex;gap:10px}.row2>div{flex:1}
 .calc{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--accent-soft);
   color:var(--accent);font-weight:700;font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
@@ -188,19 +229,31 @@ const BASE = (window.GONGGU_DATA && Array.isArray(window.GONGGU_DATA.groups))
 
 const uid = () => "u" + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
 
+const DEFAULT_SETTINGS = {
+  autoDelete: false,   // 완료된 공구를 유예기간 후 자동 삭제할지
+  graceDays: 20,       // 유예기간 (일)
+  shipRound: true      // 배송비 분담액을 반올림해서 보여줄지
+};
+
 /* data.js 한 벌을 그대로 앱 데이터로 변환 (최초 실행 / 전체 초기화용) */
 function fromBase() {
-  return {
-    schema: 1,
+  return normalize({
+    schema: 2,
     dataVersion: BASE.version,
     dismissed: BASE.version,
+    people: {},
+    settings: {},
     groups: BASE.groups.map(cloneBaseGroup)
-  };
+  });
 }
 
 function cloneBaseGroup(bg) {
   return {
     id: bg.id, title: bg.title, date: bg.date, type: bg.type, origin: "base",
+    chatUrl: bg.chatUrl || "",
+    shipIntl: Number(bg.shipIntl) || 0,
+    shipDomestic: Number(bg.shipDomestic) || 0,
+    done: false, doneAt: null,
     items: (bg.items || []).map(i => ({
       id: i.id, name: i.name, qty: i.qty, price: i.price,
       holders: (i.holders || []).slice(), origin: "base"
@@ -208,18 +261,36 @@ function cloneBaseGroup(bg) {
   };
 }
 
+/* 예전 버전에서 저장된 데이터에 새 필드를 채워 넣는다 */
+function normalize(db) {
+  db.people = (db.people && typeof db.people === "object") ? db.people : {};
+  db.settings = Object.assign({}, DEFAULT_SETTINGS, db.settings || {});
+  db.settings.graceDays = Math.max(0, Number(db.settings.graceDays) || 0);
+  (db.groups || []).forEach(g => {
+    if (typeof g.chatUrl !== "string") g.chatUrl = "";
+    g.shipIntl = Number(g.shipIntl) || 0;
+    g.shipDomestic = Number(g.shipDomestic) || 0;
+    g.done = g.done === true;
+    if (!g.doneAt) g.doneAt = null;
+    g.items = g.items || [];
+  });
+  db.schema = 2;
+  return db;
+}
+
 /* 옛 형식(schema 없음)으로 저장된 데이터 이사시키기.
    기본 데이터와 같은 공구(이름+날짜 동일)는 중복되니 걷어내고,
    직접 넣었던 공구만 local 로 살려 둔다. */
 function migrate(old) {
   if (!old || !Array.isArray(old.groups)) return fromBase();
-  if (old.schema >= 1) return old;
+  if (old.schema >= 1) return normalize(old);
 
   const baseKeys = BASE.groups.map(g => g.title + "|" + g.date);
   const kept = old.groups
     .filter(g => baseKeys.indexOf(g.title + "|" + g.date) < 0)
     .map(g => ({
       id: g.id || uid(), title: g.title, date: g.date, type: g.type || "host", origin: "local",
+      chatUrl: "", shipIntl: 0, shipDomestic: 0, done: false, doneAt: null,
       items: (g.items || []).map(i => ({
         id: i.id || uid(), name: i.name, qty: i.qty, price: i.price,
         holders: (i.holders || []).slice(), origin: "local"
@@ -237,18 +308,24 @@ DB = migrate(DB);
 
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) {} };
 
-/* data.js 의 version 이 올라갔는지 */
 const hasUpdate = () => BASE.version > (DB.dataVersion || 0);
 
-/* 기본 데이터 반영 — 사용자가 직접 추가한 공구·품목은 보존한다 */
+/* 기본 데이터 반영 — 사용자가 직접 추가한 공구·품목과
+   앱에서 입력한 배송비·링크·완료 상태는 보존한다 */
 function applyBase() {
   const localGroups = DB.groups.filter(g => g.origin === "local");
 
   const merged = BASE.groups.map(bg => {
     const old = DB.groups.find(g => g.id === bg.id);
-    const keptItems = old ? old.items.filter(i => i.origin === "local") : [];
     const fresh = cloneBaseGroup(bg);
-    fresh.items = fresh.items.concat(keptItems);
+    if (old) {
+      fresh.items = fresh.items.concat(old.items.filter(i => i.origin === "local"));
+      if (old.chatUrl) fresh.chatUrl = old.chatUrl;
+      if (old.shipIntl) fresh.shipIntl = old.shipIntl;
+      if (old.shipDomestic) fresh.shipDomestic = old.shipDomestic;
+      fresh.done = old.done;
+      fresh.doneAt = old.doneAt;
+    }
     return fresh;
   });
 
@@ -266,59 +343,147 @@ const lineTotal = it => (Number(it.qty) || 0) * (Number(it.price) || 0);
 const groupTotal = g => g.items.reduce((s, it) => s + lineTotal(it), 0);
 const groupQty = g => g.items.reduce((s, it) => s + (Number(it.qty) || 0), 0);
 const holderLabel = g => g.type === "joined" ? "공구주" : "선점자";
+
+/* 배송비 — 해외배송비(해배비) + 일본내 배송비(일내비) 를
+   공구 전체 갯수로 나눠 품목 1개당 분담액을 구한다 */
+const shipTotal = g => (Number(g.shipIntl) || 0) + (Number(g.shipDomestic) || 0);
+const shipPerUnit = g => { const q = groupQty(g); return q > 0 ? shipTotal(g) / q : 0; };
+const itemShip = (g, it) => shipPerUnit(g) * (Number(it.qty) || 0);
+const grandTotal = g => groupTotal(g) + shipTotal(g);
+
+/* 설정에 따라 반올림하거나 소수점 첫째자리까지 보여준다 */
+function fmtShip(n) {
+  const v = Number(n) || 0;
+  if (DB.settings.shipRound) return won(Math.round(v));
+  const r = Math.round(v * 10) / 10;
+  return r.toLocaleString("ko-KR", {
+    minimumFractionDigits: r % 1 === 0 ? 0 : 1,
+    maximumFractionDigits: 1
+  });
+}
+
 const fmtDate = d => {
   if (!d) return "";
   const p = String(d).split("-");
-  return p.length === 3 ? `${p[0]}.${p[1]}.${p[2]}` : String(d);
+  return p.length === 3 ? p[0] + "." + p[1] + "." + p[2] : String(d);
 };
+const todayISO = () => {
+  const d = new Date();
+  return d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0");
+};
+const daysSince = iso => Math.floor((Date.now() - new Date(iso + "T00:00:00").getTime()) / 86400000);
+const daysLeft = g => DB.settings.graceDays - daysSince(g.doneAt);
+
 const sorted = type => DB.groups
   .filter(g => g.type === type)
   .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
 const findGroup = id => DB.groups.find(g => g.id === id);
 const parseHolders = s => String(s || "").split(/[,/·]/).map(x => x.trim()).filter(Boolean);
+const hasInfo = name => {
+  const p = DB.people[name];
+  return !!(p && (p.phone || p.addr || p.memo));
+};
+const chip = name =>
+  '<span class="who' + (hasInfo(name) ? " has" : "") + '" data-person="' + esc(name) + '">' + esc(name) + '</span>';
+
+/* 선점자별 정산 — 한 품목을 여러 명이 나눠 가졌으면 인원수로 나눈다 */
+function settlement(g) {
+  const map = {};
+  const per = shipPerUnit(g);
+  g.items.forEach(it => {
+    const names = (it.holders || []).length ? it.holders : ["(미정)"];
+    const goods = lineTotal(it) / names.length;
+    const ship = per * (Number(it.qty) || 0) / names.length;
+    const qty = (Number(it.qty) || 0) / names.length;
+    names.forEach(nm => {
+      if (!map[nm]) map[nm] = { goods: 0, ship: 0, qty: 0 };
+      map[nm].goods += goods;
+      map[nm].ship += ship;
+      map[nm].qty += qty;
+    });
+  });
+  return Object.keys(map).map(nm => ({
+    name: nm, goods: map[nm].goods, ship: map[nm].ship,
+    qty: map[nm].qty, total: map[nm].goods + map[nm].ship
+  })).sort((a, b) => b.total - a.total);
+}
+
+/* 유예기간이 지난 완료 공구를 지운다 (설정이 켜져 있을 때만) */
+let purgeNotice = "";
+function purgeExpired() {
+  if (!DB.settings.autoDelete) return;
+  const gone = [];
+  const keep = [];
+  DB.groups.forEach(g => {
+    if (g.done && g.doneAt && daysSince(g.doneAt) >= DB.settings.graceDays) gone.push(g.title);
+    else keep.push(g);
+  });
+  if (gone.length) {
+    DB.groups = keep;
+    save();
+    purgeNotice = "완료 후 " + DB.settings.graceDays + "일이 지난 공구 " +
+      gone.length + "개를 정리했어요 (" + gone.join(", ") + ")";
+  }
+}
 
 /* ========== 상태 ========== */
 const S = { view: "list", tab: "host", groupId: null, q: "" };
 
 /* ========== 배너 ========== */
 function banner() {
-  if (!hasUpdate() || DB.dismissed === BASE.version) return "";
-  return `
-    <div class="banner">
-      <div class="bt">새 기본 데이터가 있어요 (v${BASE.version})<br>
-        <span style="font-weight:500;opacity:.85">직접 추가하신 공구·품목은 그대로 유지돼요</span></div>
-      <button data-applybase="1">불러오기</button>
-      <button class="x" data-dismiss="1">✕</button>
-    </div>`;
+  let out = "";
+  if (purgeNotice) {
+    out += '<div class="banner info"><div class="bt">' + esc(purgeNotice) +
+      '</div><button class="x" data-clearnotice="1">✕</button></div>';
+  }
+  if (hasUpdate() && DB.dismissed !== BASE.version) {
+    out += '<div class="banner">' +
+      '<div class="bt">새 기본 데이터가 있어요 (v' + BASE.version + ')<br>' +
+      '<span style="font-weight:500;opacity:.85">직접 추가하신 공구·품목은 그대로 유지돼요</span></div>' +
+      '<button data-applybase="1">불러오기</button>' +
+      '<button class="x" data-dismiss="1">✕</button></div>';
+  }
+  return out;
 }
 
 /* ========== 뷰: 목록 ========== */
 function viewList() {
   const list = sorted(S.tab);
-  const cards = list.length ? list.map(g => `
-    <div class="card" data-open="${esc(g.id)}">
-      <div class="body">
-        <div class="t">${esc(g.title)}</div>
-        <div class="m">${fmtDate(g.date)} · 품목 ${g.items.length}개 · ${groupQty(g)}점</div>
-      </div>
-      <div class="amt">${won(groupTotal(g))}원</div>
-      <div class="chev">›</div>
-    </div>`).join("")
-    : `<div class="empty">아직 등록된 공구가 없어요.<br>아래 버튼으로 하나 만들어 보세요.</div>`;
+  const cards = list.length ? list.map(g => {
+    let badge = "";
+    if (g.done) {
+      badge = '<span class="badge done">완료</span>';
+      if (DB.settings.autoDelete && g.doneAt) {
+        const d = daysLeft(g);
+        badge += '<span class="badge">' + (d > 0 ? "D-" + d + " 삭제" : "곧 삭제") + '</span>';
+      }
+    }
+    const ship = shipTotal(g) > 0 ? " · 배송비 " + won(shipTotal(g)) : "";
+    return '<div class="card" data-open="' + esc(g.id) + '">' +
+      '<div class="body">' +
+        '<div class="t">' + esc(g.title) + badge + '</div>' +
+        '<div class="m">' + fmtDate(g.date) + ' · 품목 ' + g.items.length +
+          '개 · ' + groupQty(g) + '점' + ship + '</div>' +
+      '</div>' +
+      '<div class="amt">' + won(grandTotal(g)) + '원</div>' +
+      '<div class="chev">›</div></div>';
+  }).join("")
+    : '<div class="empty">아직 등록된 공구가 없어요.<br>아래 버튼으로 하나 만들어 보세요.</div>';
 
-  return `
-    <header>
-      <h1>공구 리스트</h1>
-      <div class="sub">전체 ${DB.groups.length}개 공구 · 총 ${won(DB.groups.reduce((s, g) => s + groupTotal(g), 0))}원</div>
-      <div class="tabs">
-        <button data-tab="host" class="${S.tab === "host" ? "on" : ""}">내 공구</button>
-        <button data-tab="joined" class="${S.tab === "joined" ? "on" : ""}">참여 공구</button>
-      </div>
-    </header>
-    ${banner()}
-    ${cards}
-    <button class="btn primary" data-newgroup="1">+ 공구 추가</button>
-  `;
+  const all = DB.groups.reduce((s, g) => s + grandTotal(g), 0);
+
+  return '<header>' +
+      '<h1>공구 리스트</h1>' +
+      '<div class="sub">전체 ' + DB.groups.length + '개 공구 · 총 ' + won(all) + '원</div>' +
+      '<div class="tabs">' +
+        '<button data-tab="host" class="' + (S.tab === "host" ? "on" : "") + '">내 공구</button>' +
+        '<button data-tab="joined" class="' + (S.tab === "joined" ? "on" : "") + '">참여 공구</button>' +
+      '</div>' +
+    '</header>' +
+    banner() + cards +
+    '<button class="btn primary" data-newgroup="1">+ 공구 추가</button>';
 }
 
 /* ========== 뷰: 공구 상세 ========== */
@@ -326,48 +491,112 @@ function viewDetail() {
   const g = findGroup(S.groupId);
   if (!g) { S.view = "list"; return viewList(); }
 
-  const rows = g.items.map(it => `
-    <tr>
-      <td class="name">${esc(it.name)}</td>
-      <td class="num">${won(it.qty)}</td>
-      <td class="num">${won(it.price)}</td>
-      <td class="num">${won(lineTotal(it))}</td>
-      <td>${(it.holders || []).map(h => `<span class="who">${esc(h)}</span>`).join("") || "–"}</td>
-      <td class="num"><button class="rowact" data-edititem="${esc(it.id)}">✏️</button></td>
-    </tr>`).join("");
+  const ship = shipTotal(g);
+  const per = shipPerUnit(g);
+  const showShip = ship > 0;
 
-  const table = g.items.length ? `
-    <div class="tablewrap">
-      <table>
-        <thead><tr>
-          <th>품목</th><th class="num">갯수</th><th class="num">단가</th>
-          <th class="num">총계</th><th>${holderLabel(g)}</th><th></th>
-        </tr></thead>
-        <tbody>
-          ${rows}
-          <tr class="sum">
-            <td>계</td>
-            <td class="num">${won(groupQty(g))}</td>
-            <td class="num">–</td>
-            <td class="num">${won(groupTotal(g))}</td>
-            <td>–</td><td></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>`
-    : `<div class="empty">품목이 없어요. 아래에서 추가해 주세요.</div>`;
+  /* --- 품목 표 (배송비가 있을 때만 배송비·합계 열이 붙는다) --- */
+  const head = showShip
+    ? '<th>품목</th><th class="num">갯수</th><th class="num">단가</th><th class="num">물품비</th>' +
+      '<th class="num ship">배송비</th><th class="num">합계</th><th>' + holderLabel(g) + '</th><th></th>'
+    : '<th>품목</th><th class="num">갯수</th><th class="num">단가</th><th class="num">총계</th>' +
+      '<th>' + holderLabel(g) + '</th><th></th>';
 
-  return `
-    <header>
-      <button class="backbtn" data-back="1">‹ 목록</button>
-      <h1>${esc(g.title)}</h1>
-      <div class="sub">${fmtDate(g.date)}${g.type === "joined" ? " · 내가 참여한 공구" : ""}</div>
-    </header>
-    ${table}
-    <button class="btn primary" data-newitem="1">+ 품목 추가</button>
-    <button class="btn" data-editgroup="1">공구 정보 수정</button>
-    <button class="btn danger" data-delgroup="1">이 공구 삭제</button>
-  `;
+  const rows = g.items.map(it => {
+    const sh = itemShip(g, it);
+    const who = (it.holders || []).map(chip).join("") || "–";
+    let cells = '<td class="name">' + esc(it.name) + '</td>' +
+      '<td class="num">' + won(it.qty) + '</td>' +
+      '<td class="num">' + won(it.price) + '</td>' +
+      '<td class="num">' + won(lineTotal(it)) + '</td>';
+    if (showShip) {
+      cells += '<td class="num ship">' + fmtShip(sh) + '</td>' +
+        '<td class="num">' + fmtShip(lineTotal(it) + sh) + '</td>';
+    }
+    cells += '<td>' + who + '</td>' +
+      '<td class="num"><button class="rowact" data-edititem="' + esc(it.id) + '">✏️</button></td>';
+    return '<tr>' + cells + '</tr>';
+  }).join("");
+
+  let sumRow = '<tr class="sum"><td>계</td><td class="num">' + won(groupQty(g)) +
+    '</td><td class="num">–</td><td class="num">' + won(groupTotal(g)) + '</td>';
+  if (showShip) {
+    sumRow += '<td class="num">' + won(ship) + '</td><td class="num">' + won(grandTotal(g)) + '</td>';
+  }
+  sumRow += '<td>–</td><td></td></tr>';
+
+  const table = g.items.length
+    ? '<div class="tablewrap"><table><thead><tr>' + head + '</tr></thead><tbody>' +
+      rows + sumRow + '</tbody></table></div>'
+    : '<div class="empty">품목이 없어요. 아래에서 추가해 주세요.</div>';
+
+  /* --- 배송비 카드 --- */
+  let shipCard = "";
+  if (showShip) {
+    shipCard = '<div class="infocard">';
+    if (g.shipIntl) {
+      shipCard += '<div class="r"><span>해외 배송비 (해배비)</span><b>' + won(g.shipIntl) + '원</b></div>';
+    }
+    if (g.shipDomestic) {
+      shipCard += '<div class="r"><span>일본 내 배송비 (일내비)</span><b>' + won(g.shipDomestic) + '원</b></div>';
+    }
+    shipCard += '<div class="r hl"><span>1개당 분담액 · 총 ' + groupQty(g) + '점</span><b>' +
+      fmtShip(per) + '원</b></div></div>';
+  }
+
+  /* --- 오픈채팅 링크 --- */
+  const chat = g.chatUrl
+    ? '<a class="btn" href="' + esc(g.chatUrl) + '" target="_blank" rel="noopener">💬 오픈채팅방 열기</a>'
+    : "";
+
+  /* --- 선점자별 정산 --- */
+  const st = settlement(g);
+  let settle = "";
+  if (st.length) {
+    settle = '<div class="sectitle">' + holderLabel(g) + '별 정산' +
+        (showShip ? " (물품비 + 배송비)" : "") + '</div>' +
+      '<div class="tablewrap"><table><thead><tr>' +
+        '<th>' + holderLabel(g) + '</th><th class="num">물품비</th>' +
+        (showShip ? '<th class="num ship">배송비</th>' : '') +
+        '<th class="num">보낼 금액</th></tr></thead><tbody>' +
+      st.map(p =>
+        '<tr><td class="name">' + chip(p.name) + '</td>' +
+        '<td class="num">' + won(Math.round(p.goods)) + '</td>' +
+        (showShip ? '<td class="num ship">' + fmtShip(p.ship) + '</td>' : '') +
+        '<td class="num"><b>' + fmtShip(p.total) + '</b></td></tr>'
+      ).join("") +
+      '</tbody></table></div>' +
+      '<div class="hint">이름을 누르면 배송 정보를 보거나 입력할 수 있어요. ' +
+      '테두리가 있는 이름은 이미 정보가 저장된 사람이에요.</div>';
+  }
+
+  /* --- 완료 상태 --- */
+  let doneInfo = "";
+  if (g.done) {
+    doneInfo = '<div class="infocard"><div class="r"><span>완료 처리일</span><b>' +
+      fmtDate(g.doneAt) + '</b></div>';
+    if (DB.settings.autoDelete) {
+      const d = daysLeft(g);
+      doneInfo += '<div class="r"><span>자동 삭제까지</span><b>' +
+        (d > 0 ? d + "일 남음" : "곧 삭제됨") + '</b></div>';
+    } else {
+      doneInfo += '<div class="r"><span>자동 삭제</span><b>꺼져 있음</b></div>';
+    }
+    doneInfo += '</div>';
+  }
+
+  return '<header>' +
+      '<button class="backbtn" data-back="1">‹ 목록</button>' +
+      '<h1>' + esc(g.title) + (g.done ? '<span class="badge done">완료</span>' : '') + '</h1>' +
+      '<div class="sub">' + fmtDate(g.date) +
+        (g.type === "joined" ? " · 내가 참여한 공구" : "") + '</div>' +
+    '</header>' +
+    chat + shipCard + table + settle + doneInfo +
+    '<button class="btn primary" data-newitem="1">+ 품목 추가</button>' +
+    '<button class="btn' + (g.done ? "" : " ok") + '" data-toggledone="1">' +
+      (g.done ? "완료 취소" : "✓ 이 공구 완료 처리") + '</button>' +
+    '<button class="btn" data-editgroup="1">공구 정보 · 배송비 수정</button>' +
+    '<button class="btn danger" data-delgroup="1">이 공구 삭제</button>';
 }
 
 /* ========== 뷰: 검색 ==========
@@ -376,117 +605,165 @@ function viewDetail() {
    끊겨서 "카와" 가 "ㅋㅏㅇㅘ" 로 쪼개진다. 결과 영역(#results)만 갱신할 것. */
 function searchResults() {
   const q = S.q.trim();
-  if (!q) return `<div class="empty">품목 이름 일부만 입력해도<br>모든 공구에서 찾아드려요.</div>`;
+  if (!q) return '<div class="empty">품목 이름 일부만 입력해도<br>모든 공구에서 찾아드려요.</div>';
 
   const lower = q.toLowerCase();
   const hits = [];
   DB.groups.forEach(g => g.items.forEach(it => {
-    if (String(it.name).toLowerCase().includes(lower)) hits.push({ g: g, it: it });
+    if (String(it.name).toLowerCase().indexOf(lower) >= 0) hits.push({ g: g, it: it });
   }));
 
-  if (!hits.length) return `<div class="empty">"${esc(q)}" 와 일치하는 품목이 없어요.</div>`;
+  if (!hits.length) return '<div class="empty">"' + esc(q) + '" 와 일치하는 품목이 없어요.</div>';
 
   const hl = name => {
     const s = String(name);
     const i = s.toLowerCase().indexOf(lower);
     if (i < 0) return esc(s);
-    return esc(s.slice(0, i)) + "<mark>" + esc(s.slice(i, i + q.length)) + "</mark>" + esc(s.slice(i + q.length));
+    return esc(s.slice(0, i)) + "<mark>" + esc(s.slice(i, i + q.length)) + "</mark>" +
+      esc(s.slice(i + q.length));
   };
 
-  return `
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>품목</th><th>어느 공구</th><th>선점자</th></tr></thead>
-        <tbody>
-          ${hits.map(h => `
-            <tr data-open="${esc(h.g.id)}" style="cursor:pointer">
-              <td class="name">${hl(h.it.name)}</td>
-              <td style="color:var(--muted);font-size:12.5px">${esc(h.g.title)}</td>
-              <td>${(h.it.holders || []).map(x => `<span class="who">${esc(x)}</span>`).join("") || "–"}</td>
-            </tr>`).join("")}
-        </tbody>
-      </table>
-    </div>
-    <div class="sub" style="text-align:center">${hits.length}건 · 행을 누르면 해당 공구로 이동해요</div>`;
+  return '<div class="tablewrap"><table>' +
+    '<thead><tr><th>품목</th><th>어느 공구</th><th>선점자</th></tr></thead><tbody>' +
+    hits.map(h =>
+      '<tr data-open="' + esc(h.g.id) + '" style="cursor:pointer">' +
+        '<td class="name">' + hl(h.it.name) + '</td>' +
+        '<td style="color:var(--muted);font-size:12.5px">' + esc(h.g.title) +
+          (h.g.done ? ' <span class="badge done">완료</span>' : '') + '</td>' +
+        '<td>' + ((h.it.holders || []).map(chip).join("") || "–") + '</td>' +
+      '</tr>'
+    ).join("") +
+    '</tbody></table></div>' +
+    '<div class="sub" style="text-align:center">' + hits.length +
+    '건 · 행을 누르면 해당 공구로 이동해요</div>';
 }
 
 function viewSearch() {
-  return `
-    <header>
-      <h1>품목 검색</h1>
-      <div class="sub">모든 공구를 통틀어 선점자를 찾아요</div>
-    </header>
-    <input class="search" id="q" type="text" placeholder="예: 치이" value="${esc(S.q)}"
-           autocomplete="off" autocapitalize="off" spellcheck="false">
-    <div id="results"></div>
-  `;
+  return '<header>' +
+      '<h1>품목 검색</h1>' +
+      '<div class="sub">모든 공구를 통틀어 선점자를 찾아요</div>' +
+    '</header>' +
+    '<input class="search" id="q" type="text" placeholder="예: 치이" value="' + esc(S.q) + '"' +
+      ' autocomplete="off" autocapitalize="off" spellcheck="false">' +
+    '<div id="results"></div>';
 }
 
 /* ========== 뷰: 요약 · 관리 ========== */
 function viewMore() {
   const all = DB.groups;
-  const total = all.reduce((s, g) => s + groupTotal(g), 0);
-  const hostTotal = all.filter(g => g.type === "host").reduce((s, g) => s + groupTotal(g), 0);
-  const joinedTotal = all.filter(g => g.type === "joined").reduce((s, g) => s + groupTotal(g), 0);
+  const goods = all.reduce((s, g) => s + groupTotal(g), 0);
+  const ships = all.reduce((s, g) => s + shipTotal(g), 0);
+  const hostTotal = all.filter(g => g.type === "host").reduce((s, g) => s + grandTotal(g), 0);
+  const joinedTotal = all.filter(g => g.type === "joined").reduce((s, g) => s + grandTotal(g), 0);
   const items = all.reduce((s, g) => s + g.items.length, 0);
 
+  /* 전체 공구를 통틀어 선점자별로 합산 */
   const byHolder = {};
-  all.forEach(g => g.items.forEach(it => {
-    const hs = it.holders || [];
-    hs.forEach(h => {
-      byHolder[h] = byHolder[h] || { cnt: 0, sum: 0 };
-      byHolder[h].cnt += (Number(it.qty) || 0) / hs.length;
-      byHolder[h].sum += lineTotal(it) / hs.length;
-    });
+  all.forEach(g => settlement(g).forEach(p => {
+    if (!byHolder[p.name]) byHolder[p.name] = { qty: 0, total: 0 };
+    byHolder[p.name].qty += p.qty;
+    byHolder[p.name].total += p.total;
   }));
   const holders = Object.keys(byHolder)
-    .map(h => [h, byHolder[h]])
-    .sort((a, b) => b[1].sum - a[1].sum);
+    .map(n => [n, byHolder[n]])
+    .sort((a, b) => b[1].total - a[1].total);
 
-  return `
-    <header>
-      <h1>요약 · 관리</h1>
-      <div class="sub">지출 현황과 백업</div>
-    </header>
-    ${banner()}
+  const doneGroups = all.filter(g => g.done && g.doneAt)
+    .sort((a, b) => String(a.doneAt).localeCompare(String(b.doneAt)));
 
-    <div class="stat">
-      <div><div class="k">전체 공구</div><div class="v">${all.length}</div></div>
-      <div><div class="k">전체 품목</div><div class="v">${items}</div></div>
-    </div>
-    <div class="stat">
-      <div><div class="k">내 공구 합계</div><div class="v">${won(hostTotal)}</div></div>
-      <div><div class="k">참여 공구 합계</div><div class="v">${won(joinedTotal)}</div></div>
-    </div>
-    <div class="stat"><div><div class="k">총 지출</div><div class="v">${won(total)}원</div></div></div>
+  const peopleNames = Object.keys(DB.people).filter(hasInfo).sort();
 
-    <div class="sectitle">선점자별 집계</div>
-    ${holders.length ? `
-      <div class="tablewrap">
-        <table>
-          <thead><tr><th>선점자</th><th class="num">점수</th><th class="num">금액</th></tr></thead>
-          <tbody>
-            ${holders.map(h => `
-              <tr><td class="name">${esc(h[0])}</td>
-                  <td class="num">${won(Math.round(h[1].cnt * 10) / 10)}</td>
-                  <td class="num">${won(Math.round(h[1].sum))}</td></tr>`).join("")}
-          </tbody>
-        </table>
-      </div>
-      <div class="hint">한 품목에 여러 명이면 인원수로 나눠서 계산했어요.</div>`
-      : `<div class="empty">데이터가 없어요.</div>`}
+  let out = '<header><h1>요약 · 관리</h1><div class="sub">지출 현황과 설정</div></header>' + banner();
 
-    <div class="sectitle">데이터</div>
-    <button class="btn" data-export="1">JSON으로 내보내기 (백업)</button>
-    <button class="btn" data-import="1">JSON 불러오기</button>
-    <button class="btn" data-applybase="1">기본 데이터 다시 불러오기</button>
-    <button class="btn danger" data-reset="1">전체 초기화 (기본 데이터만 남김)</button>
-    <div class="hint" style="text-align:center;margin:14px 0 4px">
-      기본 데이터 v${BASE.version} · 적용됨 v${DB.dataVersion || 0}<br><br>
-      내가 앱에서 넣은 데이터는 이 기기의 브라우저에만 있어요.
-      브라우저 데이터를 지우면 사라지니 가끔 내보내기로 백업해 두세요.
-    </div>
-  `;
+  out += '<div class="stat">' +
+      '<div><div class="k">전체 공구</div><div class="v">' + all.length + '</div></div>' +
+      '<div><div class="k">전체 품목</div><div class="v">' + items + '</div></div>' +
+    '</div>' +
+    '<div class="stat">' +
+      '<div><div class="k">내 공구 합계</div><div class="v">' + won(hostTotal) + '</div></div>' +
+      '<div><div class="k">참여 공구 합계</div><div class="v">' + won(joinedTotal) + '</div></div>' +
+    '</div>' +
+    '<div class="infocard">' +
+      '<div class="r"><span>물품비</span><b>' + won(goods) + '원</b></div>' +
+      '<div class="r"><span>배송비</span><b>' + won(ships) + '원</b></div>' +
+      '<div class="r hl"><span>총 지출</span><b>' + won(goods + ships) + '원</b></div>' +
+    '</div>';
+
+  out += '<div class="sectitle">선점자별 집계 (배송비 포함)</div>';
+  out += holders.length
+    ? '<div class="tablewrap"><table><thead><tr><th>선점자</th>' +
+      '<th class="num">점수</th><th class="num">금액</th></tr></thead><tbody>' +
+      holders.map(h =>
+        '<tr><td class="name">' + chip(h[0]) + '</td>' +
+        '<td class="num">' + (Math.round(h[1].qty * 10) / 10) + '</td>' +
+        '<td class="num">' + won(Math.round(h[1].total)) + '</td></tr>'
+      ).join("") +
+      '</tbody></table></div>' +
+      '<div class="hint">한 품목에 여러 명이면 인원수로 나눠서 계산했어요. ' +
+      '이름을 누르면 배송 정보를 볼 수 있어요.</div>'
+    : '<div class="empty">데이터가 없어요.</div>';
+
+  /* 배송 정보 */
+  out += '<div class="sectitle">배송 정보 (' + peopleNames.length + '명)</div>';
+  out += peopleNames.length
+    ? '<div class="tablewrap"><table><tbody>' + peopleNames.map(n =>
+        '<tr data-person="' + esc(n) + '" style="cursor:pointer">' +
+        '<td class="name">' + esc(n) + '</td>' +
+        '<td style="color:var(--muted);font-size:12.5px;white-space:normal">' +
+          esc([DB.people[n].phone, DB.people[n].addr].filter(Boolean).join(" · ").slice(0, 40)) +
+        '</td><td class="num" style="color:var(--muted)">›</td></tr>'
+      ).join("") + '</tbody></table></div>'
+    : '<div class="hint" style="text-align:center;padding:14px 0">아직 저장된 배송 정보가 없어요.<br>' +
+      '공구 안에서 선점자 이름을 누르면 입력할 수 있어요.</div>';
+
+  /* 설정 */
+  out += '<div class="sectitle">설정</div>' +
+    '<div class="setrow"><div class="sbody">' +
+      '<div class="sk">완료 공구 자동 삭제</div>' +
+      '<div class="sd">완료 처리 후 유예기간이 지나면 자동으로 지워요.<br>' +
+      '배송 분실 같은 문제에 대비해 유예기간을 둡니다.</div>' +
+    '</div><button class="tgl ' + (DB.settings.autoDelete ? "on" : "") +
+      '" data-toggle="autoDelete"></button></div>' +
+
+    '<div class="setrow"><div class="sbody">' +
+      '<div class="sk">유예기간</div>' +
+      '<div class="sd">완료 처리 후 며칠 뒤에 지울지</div>' +
+    '</div><input class="numin" type="number" min="0" max="365" inputmode="numeric" ' +
+      'data-setnum="graceDays" value="' + DB.settings.graceDays + '"></div>' +
+
+    '<div class="setrow"><div class="sbody">' +
+      '<div class="sk">배송비 반올림</div>' +
+      '<div class="sd">' + (DB.settings.shipRound
+        ? "1,840원처럼 원 단위로 표시해요"
+        : "1,839.7원처럼 소수점까지 표시해요") + '</div>' +
+    '</div><button class="tgl ' + (DB.settings.shipRound ? "on" : "") +
+      '" data-toggle="shipRound"></button></div>';
+
+  if (doneGroups.length) {
+    out += '<div class="sectitle">완료된 공구 (' + doneGroups.length + '개)</div>' +
+      '<div class="tablewrap"><table><tbody>' +
+      doneGroups.map(g => {
+        const d = daysLeft(g);
+        const right = DB.settings.autoDelete ? (d > 0 ? "D-" + d : "곧 삭제") : "보관 중";
+        return '<tr data-open="' + esc(g.id) + '" style="cursor:pointer">' +
+          '<td class="name">' + esc(g.title) + '</td>' +
+          '<td style="color:var(--muted);font-size:12.5px">' + fmtDate(g.doneAt) + ' 완료</td>' +
+          '<td class="num" style="color:var(--muted)">' + right + '</td></tr>';
+      }).join("") + '</tbody></table></div>';
+  }
+
+  out += '<div class="sectitle">데이터</div>' +
+    '<button class="btn" data-export="1">JSON으로 내보내기 (백업)</button>' +
+    '<button class="btn" data-import="1">JSON 불러오기</button>' +
+    '<button class="btn" data-applybase="1">기본 데이터 다시 불러오기</button>' +
+    '<button class="btn danger" data-reset="1">전체 초기화 (기본 데이터만 남김)</button>' +
+    '<div class="hint" style="text-align:center;margin:14px 0 4px">' +
+      '기본 데이터 v' + BASE.version + ' · 적용됨 v' + (DB.dataVersion || 0) + '<br><br>' +
+      '내가 앱에서 넣은 데이터는 이 기기의 브라우저에만 있어요.<br>' +
+      '브라우저 데이터를 지우면 사라지니 가끔 내보내기로 백업해 두세요.' +
+    '</div>';
+
+  return out;
 }
 
 /* ========== 렌더 ========== */
@@ -497,10 +774,11 @@ function render() {
     S.view === "search" ? viewSearch() : viewMore();
 
   const tabs = [["list", "📋", "목록"], ["search", "🔍", "검색"], ["more", "📊", "요약"]];
-  document.getElementById("nav").innerHTML = tabs.map(t => `
-    <button data-nav="${t[0]}" class="${(S.view === t[0] || (t[0] === "list" && S.view === "detail")) ? "on" : ""}">
-      <span class="ico">${t[1]}</span>${t[2]}
-    </button>`).join("");
+  document.getElementById("nav").innerHTML = tabs.map(t =>
+    '<button data-nav="' + t[0] + '" class="' +
+    ((S.view === t[0] || (t[0] === "list" && S.view === "detail")) ? "on" : "") + '">' +
+    '<span class="ico">' + t[1] + '</span>' + t[2] + '</button>'
+  ).join("");
 
   if (S.view === "search") {
     document.getElementById("results").innerHTML = searchResults();
@@ -515,10 +793,9 @@ function closeModal() { document.getElementById("modal").innerHTML = ""; }
 
 function openSheet(html, onSubmit) {
   const m = document.getElementById("modal");
-  m.innerHTML = `<div class="mask"><div class="sheet"><form id="f">${html}
-    <button type="submit" class="btn primary">저장</button>
-    <button type="button" class="btn" data-cancel="1">취소</button>
-  </form></div></div>`;
+  m.innerHTML = '<div class="mask"><div class="sheet"><form id="f">' + html +
+    '<button type="submit" class="btn primary">저장</button>' +
+    '<button type="button" class="btn" data-cancel="1">취소</button></form></div></div>';
   m.querySelector(".mask").addEventListener("click", e => {
     if (e.target.classList.contains("mask")) closeModal();
   });
@@ -529,66 +806,103 @@ function openSheet(html, onSubmit) {
     new FormData(e.target).forEach((v, k) => { d[k] = v; });
     if (onSubmit(d) !== false) { save(); closeModal(); render(); }
   });
-  const first = m.querySelector("input");
+  const first = m.querySelector("input, textarea");
   if (first) first.focus();
 }
 
 function groupForm(g) {
   const isNew = !g;
-  openSheet(`
-    <h2>${isNew ? "공구 추가" : "공구 수정"}</h2>
-    <label>공구 이름</label>
-    <input type="text" name="title" value="${esc(g ? g.title : "")}" placeholder="예: 9/25 할로윈 마코 공구" required>
-    <label>날짜</label>
-    <input type="date" name="date" value="${esc(g ? g.date : new Date().toISOString().slice(0, 10))}">
-  `, d => {
-    if (isNew) {
-      const ng = { id: uid(), title: d.title.trim(), date: d.date, type: S.tab, origin: "local", items: [] };
-      DB.groups.push(ng);
-      S.view = "detail"; S.groupId = ng.id;
-    } else {
-      g.title = d.title.trim();
-      g.date = d.date;
+  openSheet(
+    '<h2>' + (isNew ? "공구 추가" : "공구 수정") + '</h2>' +
+    '<label>공구 이름</label>' +
+    '<input type="text" name="title" value="' + esc(g ? g.title : "") +
+      '" placeholder="예: 9/25 할로윈 마코 공구" required>' +
+    '<label>날짜</label>' +
+    '<input type="date" name="date" value="' + esc(g ? g.date : todayISO()) + '">' +
+    '<label>오픈채팅방 링크</label>' +
+    '<input type="text" name="chatUrl" inputmode="url" value="' + esc(g ? g.chatUrl : "") +
+      '" placeholder="https://open.kakao.com/...">' +
+    '<div class="hint">넣어 두면 공구 화면에서 바로 열 수 있어요.</div>' +
+    '<div class="row2">' +
+      '<div><label>해외 배송비 (해배비)</label>' +
+      '<input type="number" name="shipIntl" min="0" step="1" inputmode="numeric" value="' +
+        (g && g.shipIntl ? g.shipIntl : "") + '" placeholder="0"></div>' +
+      '<div><label>일본 내 배송비 (일내비)</label>' +
+      '<input type="number" name="shipDomestic" min="0" step="1" inputmode="numeric" value="' +
+        (g && g.shipDomestic ? g.shipDomestic : "") + '" placeholder="0"></div>' +
+    '</div>' +
+    '<div class="calc" id="calc">배송비 0원</div>' +
+    '<div class="hint">공구 전체 갯수로 나눠서 품목마다 분담액이 표시돼요.<br>' +
+      '예) 해배비 19,800원 · 총 10점 → 1개당 1,980원</div>',
+    d => {
+      let url = String(d.chatUrl || "").trim();
+      if (url && !/^https?:\/\//i.test(url)) url = "https://" + url;
+      const si = Number(d.shipIntl) || 0;
+      const sd = Number(d.shipDomestic) || 0;
+      if (isNew) {
+        const ng = {
+          id: uid(), title: d.title.trim(), date: d.date, type: S.tab, origin: "local",
+          chatUrl: url, shipIntl: si, shipDomestic: sd, done: false, doneAt: null, items: []
+        };
+        DB.groups.push(ng);
+        S.view = "detail"; S.groupId = ng.id;
+      } else {
+        g.title = d.title.trim(); g.date = d.date;
+        g.chatUrl = url; g.shipIntl = si; g.shipDomestic = sd;
+      }
     }
-  });
+  );
+
+  /* 배송비 분담액 실시간 표시 */
+  const f = document.getElementById("f");
+  const qty = g ? groupQty(g) : 0;
+  const calc = () => {
+    const t = (Number(f.shipIntl.value) || 0) + (Number(f.shipDomestic.value) || 0);
+    document.getElementById("calc").textContent = (qty > 0 && t > 0)
+      ? "배송비 " + won(t) + "원 · " + qty + "점 → 1개당 " + fmtShip(t / qty) + "원"
+      : "배송비 " + won(t) + "원";
+  };
+  f.shipIntl.addEventListener("input", calc);
+  f.shipDomestic.addEventListener("input", calc);
+  calc();
 }
 
 function itemForm(g, it) {
   const isNew = !it;
-  openSheet(`
-    <h2>${isNew ? "품목 추가" : "품목 수정"}</h2>
-    <label>품목</label>
-    <input type="text" name="name" value="${esc(it ? it.name : "")}" placeholder="예: 간호사 치이카와" required>
-    <div class="row2">
-      <div><label>갯수</label><input type="number" name="qty" min="0" step="1" inputmode="numeric" value="${it ? it.qty : 1}" required></div>
-      <div><label>단가</label><input type="number" name="price" min="0" step="1" inputmode="numeric" value="${it ? it.price : ""}" placeholder="19800" required></div>
-    </div>
-    <div class="calc" id="calc">총계 0원</div>
-    <label>${holderLabel(g)}</label>
-    <input type="text" name="holders" value="${esc(it ? (it.holders || []).join(", ") : "")}" placeholder="여러 명이면 쉼표로 (예: 윤서연, 공구주)">
-    <div class="hint">쉼표( , ) 또는 슬래시( / )로 구분하면 여러 명으로 저장돼요.</div>
-    ${isNew ? "" : `<button type="button" class="btn danger" data-delitem="1">이 품목 삭제</button>`}
-  `, d => {
-    const data = {
-      name: d.name.trim(),
-      qty: Number(d.qty) || 0,
-      price: Number(d.price) || 0,
-      holders: parseHolders(d.holders)
-    };
-    if (isNew) {
-      g.items.push({
-        id: uid(), origin: "local",
-        name: data.name, qty: data.qty, price: data.price, holders: data.holders
-      });
-    } else {
-      it.name = data.name; it.qty = data.qty; it.price = data.price; it.holders = data.holders;
+  openSheet(
+    '<h2>' + (isNew ? "품목 추가" : "품목 수정") + '</h2>' +
+    '<label>품목</label>' +
+    '<input type="text" name="name" value="' + esc(it ? it.name : "") +
+      '" placeholder="예: 간호사 치이카와" required>' +
+    '<div class="row2">' +
+      '<div><label>갯수</label><input type="number" name="qty" min="0" step="1" inputmode="numeric" value="' +
+        (it ? it.qty : 1) + '" required></div>' +
+      '<div><label>단가</label><input type="number" name="price" min="0" step="1" inputmode="numeric" value="' +
+        (it ? it.price : "") + '" placeholder="19800" required></div>' +
+    '</div>' +
+    '<div class="calc" id="calc">총계 0원</div>' +
+    '<label>' + holderLabel(g) + '</label>' +
+    '<input type="text" name="holders" value="' + esc(it ? (it.holders || []).join(", ") : "") +
+      '" placeholder="여러 명이면 쉼표로 (예: 윤서연, 공구주)">' +
+    '<div class="hint">쉼표( , ) 또는 슬래시( / )로 구분하면 여러 명으로 저장돼요.</div>' +
+    (isNew ? "" : '<button type="button" class="btn danger" data-delitem="1">이 품목 삭제</button>'),
+    d => {
+      const name = d.name.trim();
+      const qty = Number(d.qty) || 0;
+      const price = Number(d.price) || 0;
+      const holders = parseHolders(d.holders);
+      if (isNew) {
+        g.items.push({ id: uid(), origin: "local", name: name, qty: qty, price: price, holders: holders });
+      } else {
+        it.name = name; it.qty = qty; it.price = price; it.holders = holders;
+      }
     }
-  });
+  );
 
   const f = document.getElementById("f");
   const calc = () => {
     const q = Number(f.qty.value) || 0, p = Number(f.price.value) || 0;
-    document.getElementById("calc").textContent = `총계 ${won(q * p)}원`;
+    document.getElementById("calc").textContent = "총계 " + won(q * p) + "원";
   };
   f.qty.addEventListener("input", calc);
   f.price.addEventListener("input", calc);
@@ -596,8 +910,57 @@ function itemForm(g, it) {
 
   const del = f.querySelector("[data-delitem]");
   if (del) del.addEventListener("click", () => {
-    if (!confirm(`"${it.name}" 품목을 삭제할까요?`)) return;
+    if (!confirm('"' + it.name + '" 품목을 삭제할까요?')) return;
     g.items = g.items.filter(x => x.id !== it.id);
+    save(); closeModal(); render();
+  });
+}
+
+/* 선점자 배송 정보 — 이름 기준으로 저장해서 모든 공구에서 공유된다 */
+function personForm(name) {
+  const p = DB.people[name] || {};
+  const had = hasInfo(name);
+  openSheet(
+    '<h2>' + esc(name) + '</h2>' +
+    '<div class="sheetsub">배송 정보는 이름 기준으로 저장돼서<br>다른 공구에서도 그대로 보여요.</div>' +
+    '<label>연락처</label>' +
+    '<input type="tel" name="phone" inputmode="tel" value="' + esc(p.phone || "") +
+      '" placeholder="010-0000-0000">' +
+    '<label>주소</label>' +
+    '<textarea name="addr" placeholder="받는 사람 · 주소 · 우편번호">' + esc(p.addr || "") + '</textarea>' +
+    '<label>메모</label>' +
+    '<input type="text" name="memo" value="' + esc(p.memo || "") +
+      '" placeholder="부재 시 문 앞 / 입금 완료 등">' +
+    (had
+      ? '<button type="button" class="btn" data-copyinfo="1">📋 배송 정보 복사</button>' +
+        '<button type="button" class="btn danger" data-delperson="1">배송 정보 지우기</button>'
+      : ''),
+    d => {
+      const phone = String(d.phone || "").trim();
+      const addr = String(d.addr || "").trim();
+      const memo = String(d.memo || "").trim();
+      if (!phone && !addr && !memo) delete DB.people[name];
+      else DB.people[name] = { name: name, phone: phone, addr: addr, memo: memo, updatedAt: todayISO() };
+    }
+  );
+
+  const f = document.getElementById("f");
+
+  const copy = f.querySelector("[data-copyinfo]");
+  if (copy) copy.addEventListener("click", () => {
+    const text = [name, p.phone, p.addr, p.memo].filter(Boolean).join("\n");
+    const done = () => { copy.textContent = "✓ 복사됐어요"; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, () => alert(text));
+    } else {
+      alert(text);
+    }
+  });
+
+  const del = f.querySelector("[data-delperson]");
+  if (del) del.addEventListener("click", () => {
+    if (!confirm(name + " 님의 배송 정보를 지울까요?")) return;
+    delete DB.people[name];
     save(); closeModal(); render();
   });
 }
@@ -607,7 +970,7 @@ function exportJSON() {
   const blob = new Blob([JSON.stringify(DB, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `공구리스트_${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = "공구리스트_" + todayISO() + ".json";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -626,7 +989,8 @@ function importJSON() {
       try {
         const data = JSON.parse(r.result);
         if (!data || !Array.isArray(data.groups)) throw new Error("형식이 달라요");
-        if (!confirm(`공구 ${data.groups.length}개를 불러옵니다. 지금 데이터는 덮어써져요. 계속할까요?`)) return;
+        if (!confirm("공구 " + data.groups.length +
+          "개를 불러옵니다. 지금 데이터는 덮어써져요. 계속할까요?")) return;
         DB = migrate(data);
         save(); S.view = "list"; render();
       } catch (e) { alert("불러오기 실패: " + e.message); }
@@ -641,10 +1005,33 @@ document.addEventListener("click", e => {
   const pick = attr => (e.target.closest ? e.target.closest("[" + attr + "]") : null);
   let n;
 
+  /* 선점자 칩은 행 클릭(data-open)보다 먼저 처리한다 */
+  if ((n = pick("data-person"))) { personForm(n.dataset.person); return; }
+
   if ((n = pick("data-nav"))) { S.view = n.dataset.nav; render(); return; }
   if ((n = pick("data-tab"))) { S.tab = n.dataset.tab; render(); return; }
   if ((n = pick("data-open"))) { S.groupId = n.dataset.open; S.view = "detail"; render(); return; }
   if (pick("data-back")) { S.view = "list"; render(); return; }
+
+  if ((n = pick("data-toggle"))) {
+    const k = n.dataset.toggle;
+    DB.settings[k] = !DB.settings[k];
+    if (k === "autoDelete" && DB.settings.autoDelete) {
+      const soon = DB.groups.filter(g =>
+        g.done && g.doneAt && daysSince(g.doneAt) >= DB.settings.graceDays);
+      if (soon.length && !confirm("자동 삭제를 켜면 이미 유예기간이 지난 공구 " +
+        soon.length + "개가 지금 바로 삭제돼요.\n(" +
+        soon.map(g => g.title).join(", ") + ")\n계속할까요?")) {
+        DB.settings.autoDelete = false;
+        render();
+        return;
+      }
+      purgeExpired();
+    }
+    save(); render(); return;
+  }
+
+  if (pick("data-clearnotice")) { purgeNotice = ""; render(); return; }
 
   if (pick("data-applybase")) {
     if (!hasUpdate() && !confirm("기본 데이터를 다시 불러올까요? 기본 항목에 해 둔 수정은 되돌아가고, 직접 추가하신 공구·품목은 그대로 유지돼요.")) return;
@@ -661,9 +1048,24 @@ document.addEventListener("click", e => {
     if (it) itemForm(g, it);
     return;
   }
+
+  if (pick("data-toggledone")) {
+    const g = findGroup(S.groupId);
+    if (g.done) {
+      g.done = false; g.doneAt = null;
+    } else {
+      const warn = DB.settings.autoDelete
+        ? "\n\n자동 삭제가 켜져 있어서 " + DB.settings.graceDays + "일 뒤에 이 공구가 지워져요."
+        : "";
+      if (!confirm('"' + g.title + '" 를 완료 처리할까요?' + warn)) return;
+      g.done = true; g.doneAt = todayISO();
+    }
+    save(); render(); return;
+  }
+
   if (pick("data-delgroup")) {
     const g = findGroup(S.groupId);
-    if (!confirm(`"${g.title}" 공구를 품목까지 전부 삭제할까요?`)) return;
+    if (!confirm('"' + g.title + '" 공구를 품목까지 전부 삭제할까요?')) return;
     DB.groups = DB.groups.filter(x => x.id !== g.id);
     save(); S.view = "list"; render(); return;
   }
@@ -686,6 +1088,15 @@ function onSearchInput(e) {
 document.addEventListener("input", onSearchInput);
 document.addEventListener("compositionend", onSearchInput);
 
+/* 숫자 설정값 (유예기간) */
+document.addEventListener("change", e => {
+  const n = e.target.closest ? e.target.closest("[data-setnum]") : null;
+  if (!n) return;
+  DB.settings[n.dataset.setnum] = Math.max(0, Math.min(365, Number(n.value) || 0));
+  save(); render();
+});
+
+purgeExpired();
 render();
 
 /* ========== 오프라인 지원 (https / localhost 에서만 동작) ========== */
